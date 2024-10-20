@@ -62,6 +62,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const formData = ref({
   userName: '',
@@ -73,6 +76,7 @@ function login () {
 }
 
 function register () {
+  router.push({ name: 'Register' })
 }
 
 // const rules = {

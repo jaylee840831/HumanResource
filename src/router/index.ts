@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import Login from '../views/LoginPage.vue'
-import MissionList from '../views/MissionList.vue'
+import Login from '@/views/LoginPage.vue'
+import Register from '@/views/RegisterPage.vue'
+import MissionList from '@/views/MissionList.vue'
 
 // 定義路由的型別
 const routes: Array<RouteRecordRaw> = [
@@ -13,6 +14,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register
   },
   {
     path: '/mission-list',
