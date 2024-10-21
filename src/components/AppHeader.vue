@@ -78,7 +78,7 @@
       v-model="drawer"
       direction="ltr"
     >
-      <el-menu :default-active="currentActive">
+      <el-menu>
         <div v-for="(m, index) in menuList" :key="index">
           <!-- 單層路由 -->
           <el-menu-item
@@ -127,11 +127,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const currentActive = ref('Resume')
+// const currentActive = ref('Resume')
 const drawer = ref(false)
 const userName = ref('user')
 
@@ -210,14 +210,14 @@ function handleUserCommand (cmd: string) {
   }
 }
 
-watch(() => router.currentRoute.value.name, (newValue) => {
-  for(let i = 0; i < menuList.value.length; i++) {
-    if (menuList.value[i].router === newValue) {
-      currentActive.value = newValue
-      break
-    }
-  }
-}, { deep: true })
+// watch(() => router.currentRoute.value.name, (newValue) => {
+//   for(let i = 0; i < menuList.value.length; i++) {
+//     if (menuList.value[i].router === newValue) {
+//       currentActive.value = newValue
+//       break
+//     }
+//   }
+// }, { deep: true })
 
 function clickToRouterChange(routerName: string | '') {
   drawer.value = false
@@ -267,7 +267,7 @@ function clickToRouterChange(routerName: string | '') {
   }
 
   .el-menu .el-menu-item.is-active {
-    color: blue !important;
+    // color: blue !important;
     // border-bottom: 3px solid  blue  !important;
   }
 

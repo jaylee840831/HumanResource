@@ -1,6 +1,7 @@
 <template>
-  <AppHeader v-show="router.path !== '/' && router.path !== '/register'"></AppHeader>
-  <router-view></router-view>
+  <AppHeader v-if="router.path !== '/' && router.path !== '/register'"></AppHeader>
+  <router-view v-if="router.path !== '/' && router.path !== '/register'" class="routerViewContainer"></router-view>
+  <router-view v-else></router-view>
 </template>
 
 <script setup lang="ts">
@@ -11,6 +12,13 @@ const router = useRoute()
 </script>
 
 <style scoped>
+.routerViewContainer{
+  width: 100%;
+  height: 90vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
 .logo {
   height: 6em;
   padding: 1.5em;

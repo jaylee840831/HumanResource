@@ -1,3 +1,35 @@
+html body{
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  font-family: 'Noto Sans TC', sans-serif;
+}
+
+/* form表單 */
+.formTitle {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.formSubTitle {
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+.formSubTitle:not(:first-child){
+  margin-top: 2rem;
+}
+
+textarea:focus{
+  border: 1px solid #409eff !important;
+  outline: none;
+}
+
+textarea{
+  resize: none !important;
+}
+
+/* el-element */
 .el-dropdown__list ul li:hover{
   background-color: transparent !important;
 }

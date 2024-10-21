@@ -1,15 +1,15 @@
 <template>
-  <div class="centerContainer">
-    <div class="flex items-center justify-center loginBox">
+  <div class="userPage">
+    <div class="userContainer">
       <el-form
         :hide-required-asterisk="true"
-        ref="loginFormRef"
+        ref="formDom"
         :model="formData"
         :rules="rules"
         class="flex-auto p-6 shadow"
       >
-        <p class="formTitle">
-          建立新帳號
+        <p class="formSubTitle">
+          基本資料
         </p>
         <el-form-item
           prop="userName"
@@ -52,22 +52,81 @@
             placeholder="出生日期"
           />
         </el-form-item>
+        <p class="formSubTitle">
+          經歷
+        </p>
         <el-form-item
-          prop="password"
-          class="formInput"
-        >
+          prop="experience"
+          class="formInput">
           <el-input
-            v-model="formData.password"
-            autocomplete="off"
-            placeholder="密碼"
-          />
+            type="textarea"
+            :rows="18"
+            maxlength="4000"
+            show-word-limit
+            v-model="formData.experience"
+            placeholder="請簡述您的工作經歷"
+          ></el-input>
         </el-form-item>
+        <p class="formSubTitle">
+          技能
+        </p>
+        <el-form-item
+          prop="selectedSkills"
+        >
+          <el-select
+            v-model="formData.selectedSkills"
+            multiple
+            placeholder="選擇技能"
+          >
+            <el-option
+              v-for="item in skillGroup"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <p class="formSubTitle">
+          語言能力
+        </p>
+        <div class="flex">
+          <el-select
+            v-model="currentselectLanguage.lan"
+            placeholder="語言"
+            class="mr-2"
+          >
+            <el-option
+              v-for="item in languageGroup"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <el-select
+            v-model="currentselectLanguage.level"
+            placeholder="等級"
+          >
+            <el-option
+              v-for="item in levelGroup"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <i class="bi bi-plus" style="font-size: 1.5rem; cursor: pointer;" @click="addLanguage(currentselectLanguage)"></i>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+          <div v-for="(l, index) in formData.selectedLanguages" :key="index">
+            {{ showLanguage(l) }}
+            <i class="bi bi-trash ml-2" style="font-size: 1.125rem; cursor: pointer;" @click="deleteLanguage(l)"></i>
+          </div>
+        </div>
         <el-form-item class="formBtn">
           <el-button
             type="primary"
             class="w-1/2"
-            @click="register">
-            註冊
+            @click="saveUser">
+            儲存
           </el-button>
         </el-form-item>
       </el-form>
@@ -78,15 +137,88 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const formData = ref({
+interface selectedLanguage {
+  lan: string;
+  level: string;
+}
+
+interface userForm {
+  userName: string;
+  phone: string;
+  email: string;
+  birthday: string;
+  experience: string;
+  selectedSkills: [];
+  selectedLanguages: selectedLanguage[];
+}
+
+const formDom = ref()
+
+const formData = ref<userForm>({
   userName: '',
   phone: '',
   email: '',
   birthday: '',
-  password: ''
+  experience: '',
+  selectedSkills: [],
+  selectedLanguages: []
 })
 
-function register () {
+// 群組選項(全部)
+const skillGroup = ref([
+  {
+    label: '影片剪輯',
+    value: 'video_clip'
+  },
+  {
+    label: '企劃行銷',
+    value: 'marketing_communication'
+  }
+])
+
+const currentselectLanguage = ref<selectedLanguage>({
+  lan: '',
+  level: ''
+})
+
+const languageGroup = ref([
+  {
+    label: '英語',
+    value: 'en'
+  },
+  {
+    label: '中文',
+    value: 'tw'
+  },
+  {
+    label: '日文',
+    value: 'jp'
+  }
+])
+
+const levelGroup = ref([
+  {
+    label: '初級',
+    value: '1'
+  },
+  {
+    label: '中等',
+    value: '2'
+  },
+  {
+    label: '精通',
+    value: '3'
+  }
+])
+
+function saveUser () {
+  formDom.value.validate((valid: boolean) => {
+    if (valid) {
+      alert('成功')
+    } else {
+      return false
+    }
+  })
 }
 
 const rules = {
@@ -99,12 +231,37 @@ const rules = {
   email: [
     { validator: validateEmail, trigger: ['blur', 'change'] }
   ],
+  selectedSkills: [
+    { validator: validateSelectedSkills, trigger: ['blur', 'change'] }
+  ],
   birthday: [
     { validator: validateBirthday, trigger: ['blur', 'change'] }
   ],
   password: [
     { validator: validatePassword, trigger: ['blur', 'change'] }
   ]
+}
+
+function showLanguage (target: selectedLanguage) {
+  const lanResult = languageGroup.value.find(item => target.lan === item.value)
+  const levelResult = levelGroup.value.find(item => target.level === item.value)
+  return `${lanResult?.label} ${levelResult?.label}`
+}
+
+function deleteLanguage (target: selectedLanguage) {
+  if (target.lan !== '' && target.level !== '') {
+    formData.value.selectedLanguages = formData.value.selectedLanguages.filter(item =>
+      JSON.stringify(target) !== JSON.stringify(item)
+    )
+  }
+}
+
+function addLanguage (target: selectedLanguage) {
+  if (target.lan !== '' && target.level !== '') {
+    const findResult = formData.value.selectedLanguages.find(item => target.lan === item.lan)
+    if (findResult === undefined) formData.value.selectedLanguages.push(JSON.parse(JSON.stringify(target)))
+    // console.log(formData.value.selectedLanguages)
+  }
 }
 
 function validateUserName (_rule: unknown, value: string, callback: (error?: string) => void) {
@@ -116,6 +273,11 @@ function validateUserName (_rule: unknown, value: string, callback: (error?: str
   } else {
     callback('長度為1至45個字元')
   }
+}
+
+function validateSelectedSkills (_rule: unknown, value: string, callback: (error?: string) => void) {
+  if (value.length <= 0) callback('至少選擇一項技能')
+  callback()
 }
 
 function validatePhone (_rule: unknown, value: string, callback: (error?: string) => void) {
@@ -196,14 +358,12 @@ function validatePassword(_rule: unknown, value: string, callback: (error?: stri
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
 }
-.loginBox {
+.userContainer {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  margin: auto;
   width: 500px;
   padding: 1.5rem 2rem 1rem;
   color: #000;
-  text-align: center;
 
   .el-form {
     width: 100%;
@@ -212,10 +372,14 @@ function validatePassword(_rule: unknown, value: string, callback: (error?: stri
       justify-content: center;
     }
 
-    .formTitle {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
+    /* .formSubTitle {
+      font-size: 1.125rem;
+      margin-bottom: 0.5rem;
     }
+
+    .formSubTitle:not(:first-child){
+      margin-top: 2rem;
+    } */
 
     .formInput {
       margin-bottom: 1.75rem;
@@ -242,6 +406,7 @@ function validatePassword(_rule: unknown, value: string, callback: (error?: stri
     }
 
     .formBtn {
+      margin-top: 1.75rem;
       button {
         font-size: 1.125rem;
         padding: 1.125rem 1.5rem;
@@ -252,15 +417,12 @@ function validatePassword(_rule: unknown, value: string, callback: (error?: stri
 }
 
 @media screen and (max-width: 760px) {
-  .loginBox {
+  .userContainer {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  margin: auto;
   width: 100%;
   padding: 1.5rem 2rem 1rem;
   color: #000;
-  text-align: center;
 
   .el-form {
     width: 100%;
@@ -269,10 +431,14 @@ function validatePassword(_rule: unknown, value: string, callback: (error?: stri
       justify-content: center;
     }
 
-    .formTitle {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
+    /* .formSubTitle {
+      font-size: 1.125rem;
+      margin-bottom: 0.5rem;
     }
+
+    .formSubTitle:not(:first-child){
+      margin-top: 2rem;
+    } */
 
     .formInput {
       margin-bottom: 1.75rem;
@@ -299,6 +465,7 @@ function validatePassword(_rule: unknown, value: string, callback: (error?: stri
     }
 
     .formBtn {
+      margin-top: 1.75rem;
       button {
         font-size: 1.125rem;
         padding: 1.125rem 1.5rem;
