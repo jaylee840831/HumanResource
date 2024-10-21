@@ -72,7 +72,7 @@ const formData = ref({
 })
 
 function login () {
-  router.push({ name: 'MissonList' })
+  router.push({ name: 'MissionList' })
 }
 
 function register () {

@@ -2,6 +2,8 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Login from '@/views/LoginPage.vue'
 import Register from '@/views/RegisterPage.vue'
 import MissionList from '@/views/MissionList.vue'
+import MissionCreate from '@/views/MissionEdit.vue'
+import MissionEdit from '@/views/MissionEdit.vue'
 import User from '@/views/UserPage.vue'
 
 // 定義路由的型別
@@ -28,8 +30,18 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/mission-list',
-    name: 'MissonList',
+    name: 'MissionList',
     component: MissionList
+  },
+  {
+    path: '/mission/create',
+    name: 'MissionCreate',
+    component: MissionCreate
+  },
+  {
+    path: '/mission/edit',
+    name: 'MissionEdit',
+    component: MissionEdit
   }
 ]
 
