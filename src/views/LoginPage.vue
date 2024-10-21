@@ -1,62 +1,62 @@
 <template>
-  <div class="flex items-center justify-center loginBox">
-    <img src="/public/images/login2.jpg" alt="" class="h-full loginLogo" loading="lazy" />
-    <el-form
-      :hide-required-asterisk="true"
-      ref="loginFormRef"
-      :model="formData"
-      class="flex-auto p-6 shadow"
-    >
-      <p class="formTitle">
-        即時人力平台
-      </p>
-      <el-form-item
-        prop="userName"
-        class="formInput"
+  <div class="centerContainer">
+    <div class="flex items-center justify-center loginBox">
+      <img src="/public/images/login2.jpg" alt="" class="h-full loginLogo" loading="lazy" />
+      <el-form
+        :hide-required-asterisk="true"
+        ref="loginFormRef"
+        :model="formData"
+        class="flex-auto p-6 shadow"
       >
-        <el-input
-          v-model="formData.userName"
-          autocomplete="off"
-          placeholder="電子郵件或電話"
-        />
-      </el-form-item>
-      <el-form-item
-        prop="password"
-        class="formInput"
-      >
-        <el-input
-          v-model="formData.password"
-          autocomplete="off"
-          placeholder="密碼"
-        />
-      </el-form-item>
-      <el-form-item>
-        <div class="w-full flex justify-between">
-          <el-checkbox v-model="formData.isAutoLogin">
-            自動登入
-          </el-checkbox>
-          <a href="#" class="no-underline text-blue-500 hover:text-blue-700">
-            忘記密碼?
-          </a>
-        </div>
-      </el-form-item>
-      <el-form-item class="formBtn">
-        <el-button
-          type="primary"
-          class="w-full"
-          @click="login">
-          登入
-        </el-button>
-      </el-form-item>
-      <el-form-item class="formBtn">
-        <el-button
-          type="success"
-          class="w-1/2"
-          @click="register">
-          建立新帳號
-        </el-button>
-      </el-form-item>
-    </el-form>
+        <p class="formTitle">
+          即時人力平台
+        </p>
+        <el-form-item
+          prop="userName"
+          class="formInput"
+        >
+          <el-input
+            v-model="formData.userName"
+            autocomplete="off"
+            placeholder="電子郵件或電話"
+          />
+        </el-form-item>
+        <el-form-item
+          prop="password"
+          class="formInput"
+        >
+          <el-input
+            v-model="formData.password"
+            autocomplete="off"
+            placeholder="密碼"
+          />
+        </el-form-item>
+        <!-- <el-form-item>
+          <div class="w-full flex justify-between">
+            <div></div>
+            <a href="#" class="no-underline text-blue-500 hover:text-blue-700">
+              忘記密碼?
+            </a>
+          </div>
+        </el-form-item> -->
+        <el-form-item class="formBtn">
+          <el-button
+            type="primary"
+            class="w-full"
+            @click="login">
+            登入
+          </el-button>
+        </el-form-item>
+        <el-form-item class="formBtn">
+          <el-button
+            type="success"
+            class="w-1/2"
+            @click="register">
+            建立新帳號
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 
@@ -68,54 +68,28 @@ const router = useRouter()
 
 const formData = ref({
   userName: '',
-  password: '',
-  isAutoLogin: false
+  password: ''
 })
 
 function login () {
+  router.push({ name: 'MissonList' })
 }
 
 function register () {
   router.push({ name: 'Register' })
 }
-
-// const rules = {
-//   userName: [
-//     { validator: validateUserName, trigger: 'change' }
-//   ],
-//   password: [
-//     { validator: validatePassword, trigger: 'change' }
-//   ]
-// }
-
-// function validateUserName (_rule: unknown, value: string, callback: (error?: string) => void) {
-//   let isEmail = false
-//   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-//   isEmail = emailRegex.test(value)
-
-//   let isPhone = false
-//   const regex = /^\d{10,15}$/
-//   isPhone = regex.test(value)
-
-//   if (isEmail || isPhone) {
-//     callback()
-//   } else {
-//     callback('帳號格式錯誤')
-//   }
-// }
-
-// function validatePassword(_rule: unknown, value: string, callback: (error?: string) => void) {
-//   const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/
-
-//   if (passwordRegex.test(value)) {
-//     callback()
-//   } else {
-//     callback('密碼為8個字元，至少包含一個大寫英文字母、一個數字以及一個特殊符號')
-//   }
-// }
 </script>
 
 <style scoped>
+.centerContainer {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -130,9 +104,7 @@ function register () {
 }
 .loginBox {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+  width: 60%;
   padding: 1.5rem 2rem 1rem;
   color: #000;
   text-align: center;
@@ -195,7 +167,7 @@ function register () {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 70%;
   padding: 1.5rem 2rem 1rem;
   color: #000;
   text-align: center;
@@ -268,6 +240,67 @@ function register () {
     width: 70%;
     height: auto;
     margin-bottom: 2rem;
+  }
+
+  .el-form {
+    width: 100%;
+
+    :deep(.el-form-item__content) {
+      justify-content: center;
+    }
+
+    .formTitle {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .formInput {
+      margin-bottom: 1.75rem;
+
+      :deep(.el-input) {
+        width: 100%;
+      }
+
+      :deep(.el-input__wrapper) {
+        padding: 0;
+        border-radius: 15px;
+        overflow: hidden;
+      }
+
+      :deep(.el-input__inner) {
+        height: 2.25em;
+        font-size: 1.125rem;
+        padding: 2px 11px;;
+
+        &::placeholder {
+          text-align: left;
+        }
+      }
+    }
+
+    .formBtn {
+      button {
+        font-size: 1.125rem;
+        padding: 1.125rem 1.5rem;
+        border-radius: 10px;
+      }
+    }
+  }
+}
+}
+
+@media screen and (min-width: 1920px) {
+  .loginBox {
+  display: flex;
+  width: 50%;
+  padding: 1.5rem 2rem 1rem;
+  color: #000;
+  text-align: center;
+
+  .loginLogo {
+    width: 40%;
+    height: auto;
+    margin-right: 2rem;
   }
 
   .el-form {

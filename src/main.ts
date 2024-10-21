@@ -4,6 +4,7 @@ import '@/assets/tailwind.css' // 引入 Tailwind CSS
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import { createPinia } from 'pinia'
+import "bootstrap-icons/font/bootstrap-icons.css"
 import router from '@/router'
 import App from './App.vue'
 
