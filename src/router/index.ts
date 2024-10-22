@@ -5,6 +5,7 @@ import MissionList from '@/views/MissionList.vue'
 import MissionCreate from '@/views/MissionEdit.vue'
 import MissionEdit from '@/views/MissionEdit.vue'
 import User from '@/views/UserPage.vue'
+import AccountSetting from '@/views/AccountSetting.vue'
 
 // 定義路由的型別
 const routes: Array<RouteRecordRaw> = [
@@ -29,7 +30,12 @@ const routes: Array<RouteRecordRaw> = [
     component: User
   },
   {
-    path: '/mission-list',
+    path: '/account',
+    name: 'Account',
+    component: AccountSetting
+  },
+  {
+    path: '/mission/list',
     name: 'MissionList',
     component: MissionList
   },

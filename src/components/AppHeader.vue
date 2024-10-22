@@ -181,7 +181,7 @@ const menuList = ref([
     routerList: [
       {
         title: '帳號設定',
-        router: 'SettingAccount',
+        router: 'Account',
         routerList: []
       },
       {

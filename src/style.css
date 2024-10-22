@@ -41,3 +41,14 @@ textarea{
 .el-drawer{
   width: 60% !important;
 }
+
+.el-card__body{
+  padding: 5px !important;
+}
+
+.el-form{
+  border: 1px lightgrey solid !important;
+  border-radius: 5px !important;
+  box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.1), /* 左下角陰影 */
+    5px 5px 5px rgba(0, 0, 0, 0.1) !important; /* 右下角陰影 */
+}

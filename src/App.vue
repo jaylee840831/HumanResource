@@ -1,6 +1,6 @@
 <template>
-  <AppHeader v-if="router.path !== '/' && router.path !== '/register'"></AppHeader>
-  <router-view v-if="router.path !== '/' && router.path !== '/register'" class="routerViewContainer"></router-view>
+  <AppHeader v-if="router.path !== '/' && router.path !== '/login' && router.path !== '/register'"></AppHeader>
+  <router-view v-if="router.path !== '/' && router.path !== '/login' && router.path !== '/register'" class="routerViewContainer"></router-view>
   <router-view v-else></router-view>
 </template>
 

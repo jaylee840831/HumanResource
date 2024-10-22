@@ -222,7 +222,7 @@ interface selectedLanguage {
   level: string;
 }
 
-interface userForm {
+interface mission {
   missionName: string,
   startday: string,
   endday: string,
@@ -241,7 +241,7 @@ interface userForm {
 const isDisabled = ref(true)
 const formDom = ref()
 
-const formData = ref<userForm>({
+const formData = ref<mission>({
   missionName: '',
   startday: '',
   endday: '',
