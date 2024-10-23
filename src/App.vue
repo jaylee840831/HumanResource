@@ -50,7 +50,7 @@ watch(() => router.name, (newValue) => {
 <style scoped>
 .routerViewContainer{
   width: 100%;
-  height: 100vh;
+  height: 90vh;
   overflow: auto;
   display: flex;
   flex-direction: column;

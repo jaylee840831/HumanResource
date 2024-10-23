@@ -34,7 +34,7 @@
                   >
                     {{ r.title }}
                   </el-menu-item>
-                  <el-sub-menu
+                  <!-- <el-sub-menu
                     v-else
                     :index="index + '-' + index2"
                   >
@@ -47,7 +47,7 @@
                     >
                       {{ r2.title }}
                     </el-menu-item>
-                  </el-sub-menu>
+                  </el-sub-menu> -->
                 </div>
               </el-sub-menu>
             </div>
@@ -104,7 +104,7 @@
               >
                 {{ r.title }}
               </el-menu-item>
-              <el-sub-menu
+              <!-- <el-sub-menu
                 v-else
                 :index="index + '-' + index2"
               >
@@ -117,7 +117,7 @@
                 >
                   {{ r2.title }}
                 </el-menu-item>
-              </el-sub-menu>
+              </el-sub-menu> -->
             </div>
           </el-sub-menu>
         </div>
@@ -146,25 +146,25 @@ const menuList = ref([
         title: '建立任務',
         router: 'MissionCreate',
         routerList: []
-      },
-      {
-        title: '我的任務',
-        router: '',
-        routerList: [
-          {
-            title: '已發布任務',
-            router: 'MissonDeploy'
-          },
-          {
-            title: '已儲存任務',
-            router: 'MissonStore'
-          },
-          {
-            title: '已應徵任務',
-            router: 'MissonApply'
-          }
-        ]
       }
+      // {
+      //   title: '我的任務',
+      //   router: '',
+      //   routerList: [
+      //     {
+      //       title: '已發布任務',
+      //       router: 'MissonDeploy'
+      //     },
+      //     {
+      //       title: '已儲存任務',
+      //       router: 'MissonStore'
+      //     },
+      //     {
+      //       title: '已應徵任務',
+      //       router: 'MissonApply'
+      //     }
+      //   ]
+      // }
     ]
   },
   {

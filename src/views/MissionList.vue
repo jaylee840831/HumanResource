@@ -1,6 +1,25 @@
 <template>
   <div class="missionList">
-    <div class="listContainer" v-for="(m, index) in missionData" :key="index">
+    <!-- search bar -->
+    <div class="flex justify-center mt-5">
+      <div class="autocompleteContainer">
+        <el-autocomplete
+          v-model="state2"
+          :fetch-suggestions="querySearch"
+          :trigger-on-focus="false"
+          clearable
+          class="mb-5"
+          placeholder="關鍵字(任務標題、技能、發布者姓名)"
+          @select="handleSelect"
+        >
+        <template #prefix>
+          <i class="bi bi-search"></i>
+        </template>
+        </el-autocomplete>
+      </div>
+    </div>
+    <!-- mission list -->
+    <div class="listContainer" v-for="(m, index) in paginatedData" :key="index">
       <div class="w-full">
         {{ m.missionName }}
       </div>
@@ -24,10 +43,23 @@
         </el-card>
       </div>
     </div>
+    <el-pagination
+      class="pagination"
+      background
+      layout="prev, pager, next"
+      :pager-count="5"
+      :page-size="pageSize"
+      :total="missionData.length"
+      :current-page="currentPage"
+      @current-change="handleCurrentChange"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+const currentPage = ref(1)
+const pageSize = ref(5)
+
 interface selectedLanguage {
   lan: string;
   level: string;
@@ -51,12 +83,68 @@ interface mission {
 
 const missionData = ref<mission[]>([])
 
+// 切換頁數獲得的當前資料
+const paginatedData = computed(() => {
+  if (missionData.value.length > 0) {
+    const start = (currentPage.value - 1) * pageSize.value
+    const end = start + pageSize.value
+    return missionData.value.slice(start, end)
+  }
+  return []
+})
+
+// 頁碼變化
+const handleCurrentChange = (page: number) => {
+  currentPage.value = page
+}
+
+interface searchItem {
+  value: string
+  link: string
+}
+
+const state2 = ref('')
+
+const searchs = ref<searchItem[]>([])
+const querySearch = (queryString: string, cb: any) => {
+  const results = queryString
+    ? searchs.value.filter(createFilter(queryString))
+    : searchs.value
+  // call callback function to return suggestions
+  cb(results)
+}
+
+const createFilter = (queryString: string) => {
+  return (search: searchItem) => {
+    return (
+      search.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+    )
+  }
+}
+const loadAll = () => {
+  return [
+    { value: '聰泰科技', link: 'https://github.com/vuejs/vue' },
+    { value: '聯發科', link: 'https://github.com/ElemeFE/element' },
+    { value: 'java', link: 'https://github.com/ElemeFE/cooking' },
+    { value: 'python', link: 'https://github.com/ElemeFE/mint-ui' },
+    { value: '台積電', link: 'https://github.com/vuejs/vuex' },
+    { value: '中信', link: 'https://github.com/vuejs/vue-router' },
+    { value: '中華郵政', link: 'https://github.com/babel/babel' },
+  ]
+}
+
+const handleSelect = (item: searchItem) => {
+  console.log(item)
+}
+
 function wordLimit (word: string) {
   if (word.length > 200) return `${word.substring(0, 200)}...`
   return word
 }
 
 onMounted(() => {
+  searchs.value = loadAll()
+
   for (let i = 0; i < 10; i++) {
     missionData.value.push({
       missionName: '測試'+ i,
@@ -151,7 +239,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   margin: 1rem auto 1rem auto;
-  width: 60%;
+  width: 50%;
   padding: 1.5rem 2rem 1rem;
   color: #000;
   border: 1px lightgrey solid;
@@ -210,12 +298,19 @@ onMounted(() => {
   }
 }
 
+:deep(.autocompleteContainer){
+  width: 50%;
+  :deep(.el-input__inner) {
+    height: 40px;
+  }
+}
+
 @media screen and (max-width: 760px) {
   .listContainer {
   display: flex;
   flex-direction: column;
   margin: auto;
-  width: 100%;
+  width: 90%;
   padding: 1.5rem 2rem 1rem;
   color: #000;
 
@@ -268,6 +363,13 @@ onMounted(() => {
       }
     }
   }
-}
+  }
+
+  :deep(.autocompleteContainer){
+    width: 90%;
+    :deep(.el-input__inner) {
+      height: 40px;
+    }
+  }
 }
 </style>

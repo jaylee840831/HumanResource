@@ -52,3 +52,18 @@ textarea{
   box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.1), /* 左下角陰影 */
     5px 5px 5px rgba(0, 0, 0, 0.1) !important; /* 右下角陰影 */
 }
+
+.el-pagination {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  .el-pagination {
+    display: inline-block;
+  }
+}
+
+/* .el-autocomplete{
+  .el-input{
+    height: 50px !important;
+  }
+} */
