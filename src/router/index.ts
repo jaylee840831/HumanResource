@@ -6,6 +6,7 @@ import MissionCreate from '@/views/MissionEdit.vue'
 import MissionEdit from '@/views/MissionEdit.vue'
 import User from '@/views/UserPage.vue'
 import AccountSetting from '@/views/AccountSetting.vue'
+import NotifySetting from '@/views/NotifySetting.vue'
 
 // 定義路由的型別
 const routes: Array<RouteRecordRaw> = [
@@ -30,9 +31,14 @@ const routes: Array<RouteRecordRaw> = [
     component: User
   },
   {
-    path: '/account',
-    name: 'Account',
+    path: '/setting/account',
+    name: 'AccountSetting',
     component: AccountSetting
+  },
+  {
+    path: '/setting/notify',
+    name: 'NotifySetting',
+    component: NotifySetting
   },
   {
     path: '/mission/list',

@@ -34,7 +34,7 @@
                   >
                     {{ r.title }}
                   </el-menu-item>
-                  <!-- <el-sub-menu
+                  <el-sub-menu
                     v-else
                     :index="index + '-' + index2"
                   >
@@ -47,7 +47,7 @@
                     >
                       {{ r2.title }}
                     </el-menu-item>
-                  </el-sub-menu> -->
+                  </el-sub-menu>
                 </div>
               </el-sub-menu>
             </div>
@@ -64,8 +64,8 @@
           </div>
           <template v-slot:dropdown>
             <el-dropdown-menu v-for="item in userInfoList" :key="item">
-              <el-dropdown-item :command="item.shortName">
-                {{ item.name }}
+              <el-dropdown-item :command="item.router">
+                {{ item.title }}
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -104,7 +104,7 @@
               >
                 {{ r.title }}
               </el-menu-item>
-              <!-- <el-sub-menu
+              <el-sub-menu
                 v-else
                 :index="index + '-' + index2"
               >
@@ -117,7 +117,7 @@
                 >
                   {{ r2.title }}
                 </el-menu-item>
-              </el-sub-menu> -->
+              </el-sub-menu>
             </div>
           </el-sub-menu>
         </div>
@@ -127,9 +127,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-
 const router = useRouter()
 // const currentActive = ref('Resume')
 const drawer = ref(false)
@@ -149,25 +146,25 @@ const menuList = ref([
         title: '建立任務',
         router: 'MissionCreate',
         routerList: []
+      },
+      {
+        title: '我的任務',
+        router: '',
+        routerList: [
+          {
+            title: '已發布任務',
+            router: 'MissonDeploy'
+          },
+          {
+            title: '已儲存任務',
+            router: 'MissonStore'
+          },
+          {
+            title: '已應徵任務',
+            router: 'MissonApply'
+          }
+        ]
       }
-      // {
-      //   title: '我的任務',
-      //   router: '',
-      //   routerList: [
-      //     {
-      //       title: '已發布任務',
-      //       router: 'MissonDeploy'
-      //     },
-      //     {
-      //       title: '已儲存任務',
-      //       router: 'MissonStore'
-      //     },
-      //     {
-      //       title: '已應徵任務',
-      //       router: 'MissonApply'
-      //     }
-      //   ]
-      // }
     ]
   },
   {
@@ -181,12 +178,12 @@ const menuList = ref([
     routerList: [
       {
         title: '帳號設定',
-        router: 'Account',
+        router: 'AccountSetting',
         routerList: []
       },
       {
         title: '通知設定',
-        router: 'SettingNotify',
+        router: 'NotifySetting',
         routerList: []
       }
     ]
@@ -195,14 +192,15 @@ const menuList = ref([
 
 const userInfoList = ref([
   {
-    name: '登出',
-    shortName: 'logout'
+    title: '登出',
+    router: '',
+    routerList: []
   }
 ])
 
 function handleUserCommand (cmd: string) {
   switch (cmd) {
-  case 'logout':
+  case '':
     router.push('/')
     break
   default:

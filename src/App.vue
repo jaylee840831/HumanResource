@@ -1,20 +1,56 @@
 <template>
-  <AppHeader v-if="router.path !== '/' && router.path !== '/login' && router.path !== '/register'"></AppHeader>
-  <router-view v-if="router.path !== '/' && router.path !== '/login' && router.path !== '/register'" class="routerViewContainer"></router-view>
-  <router-view v-else></router-view>
+  <AppHeader
+    id="appHeader"
+    v-if="router.name !== 'Main' && router.name !== 'Login' && router.name !== 'Register'"
+  >
+  </AppHeader>
+
+  <router-view
+    id="routerView"
+    class="routerViewContainer"
+    v-if="router.name !== 'Main' && router.name !== 'Login' && router.name !== 'Register'"
+  >
+  </router-view>
+
+  <router-view v-else>
+  </router-view>
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 
 const router = useRoute()
+
+const handleResize = () => {
+  setTimeout(() => {
+    if (router.name !== 'Main' && router.name !== 'Login' && router.name !== 'Register') {
+      if (document.getElementById('appHeader') && document.getElementById('routerView')) {
+        const appHeader = document.getElementById('appHeader')
+        const routerView = document.getElementById('routerView')
+        routerView?.style.setProperty('height', `calc(100vh - ${ appHeader?.clientHeight }px)`)
+        console.log(appHeader?.clientHeight, routerView?.clientHeight)
+      }
+    }
+  }, 200)
+}
+
+watchEffect(() => {
+  handleResize() // 初始先執行一次監聽視窗大小變化
+  window.addEventListener('resize', handleResize)
+  return () => {
+    window.removeEventListener('resize', handleResize)
+  }
+})
+
+watch(() => router.name, (newValue) => {
+  handleResize()
+}, { deep: true })
 </script>
 
 <style scoped>
 .routerViewContainer{
   width: 100%;
-  height: 90vh;
+  height: 100vh;
   overflow: auto;
   display: flex;
   flex-direction: column;

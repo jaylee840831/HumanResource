@@ -15,7 +15,7 @@ export default defineConfig({
     vue(),
     AutoImport({
       // 自動導入 Vue 和 Vue Router 的 API
-      imports: ['vue', 'vue-router'],
+      imports: ['vue', 'vue-router','pinia'],
       vueTemplate: true,
       dts: true, // 生成的類型定義文件路徑
       eslintrc: {

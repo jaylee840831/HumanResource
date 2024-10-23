@@ -115,11 +115,11 @@
           </el-select>
           <i class="bi bi-plus" style="font-size: 1.5rem; cursor: pointer;" @click="addLanguage(currentselectLanguage)"></i>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-          <div v-for="(l, index) in formData.selectedLanguages" :key="index">
+        <div class="grid grid-cols-2 gap-4 mt-2">
+          <el-card shadow="always" class="flex justify-center" v-for="(l, index) in formData.selectedLanguages" :key="index">
             {{ showLanguage(l) }}
             <i class="bi bi-trash ml-2" style="font-size: 1.125rem; cursor: pointer;" @click="deleteLanguage(l)"></i>
-          </div>
+          </el-card>
         </div>
         <el-form-item class="formBtn">
           <el-button
@@ -135,8 +135,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-
 interface selectedLanguage {
   lan: string;
   level: string;

@@ -2,6 +2,12 @@ import globals from "globals"
 import pluginJs from "@eslint/js"
 import tseslint from "typescript-eslint"
 import pluginVue from "eslint-plugin-vue"
+import fs from 'node:fs'
+import { fileURLToPath, URL } from 'node:url'
+
+const autoImportPath =
+fileURLToPath(new URL('./.eslintrc-auto-import.json', import.meta.url))
+const eslintrcAutoImport = JSON.parse(fs.readFileSync(autoImportPath, 'utf8'))
 
 export default [
   {files: ["**/*.{js,mjs,cjs,ts,vue}"]},
@@ -27,6 +33,14 @@ export default [
       'no-unused-vars': 'error',
       // 禁止使用未宣告的變數
       'no-undef': 'error'
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true
+        }
+      },
+      ...eslintrcAutoImport
     }
   },
   {languageOptions: { globals: {...globals.browser, ...globals.node} }},

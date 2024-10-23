@@ -92,14 +92,23 @@
             更新
           </el-button>
         </el-form-item>
+        <p class="formSubTitle">
+          刪除帳號
+        </p>
+        <el-form-item class="formBtn">
+          <el-button
+            type="info"
+            class="w-1/2"
+            @click="deleteAccount">
+            刪除
+          </el-button>
+        </el-form-item>
       </el-form>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-
 interface selectedLanguage {
   lan: string;
   level: string;
@@ -139,6 +148,9 @@ function saveAccount () {
       return false
     }
   })
+}
+
+function deleteAccount () {
 }
 
 function savePassword () {

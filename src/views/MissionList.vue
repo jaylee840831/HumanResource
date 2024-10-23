@@ -28,8 +28,6 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-
 interface selectedLanguage {
   lan: string;
   level: string;
