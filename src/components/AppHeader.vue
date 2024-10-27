@@ -6,6 +6,7 @@
           <i class="bi bi-list drawerButton" @click="drawer = true"></i>
           <!-- 平板、電腦版router menu -->
           <el-menu
+            :default-active="routerActiveIndex"
             class="routerMenu"
             mode="horizontal"
           >
@@ -13,26 +14,35 @@
               <!-- 單層路由 -->
               <el-menu-item
                 v-if="m.routerList.length === 0"
-                :index="index"
-                @click="router.push({ name: m.router })"
+                :index="index.toString()"
+                :class="{ 'is-active': isActive(index.toString()) }"
+                @click="clickToRouterChange(m.routerName, index.toString())"
               >
-                {{ m.title }}
+                <span>
+                  {{ m.title }}
+                </span>
               </el-menu-item>
               <!-- 多層路由 -->
               <el-sub-menu
                 v-else
-                :index="index"
+                :class="{ 'is-active': isActive(index.toString()) }"
+                :index="index.toString()"
               >
                 <template #title>
-                  {{ m.title }}
+                  <span>
+                    {{ m.title }}
+                  </span>
                 </template>
                 <div v-for="(r, index2) in m.routerList" :key="index2">
                   <el-menu-item
-                    :index="index + '-' + index2"
                     v-if="r.routerList.length === 0"
-                    @click="router.push({ name: r.router })"
+                    :index="index.toString() + '-' + index2.toString()"
+                    :class="{ 'is-active': isActive(index.toString() + '-' + index2.toString()) }"
+                    @click="clickToRouterChange(r.routerName, `${index.toString()}-${index2.toString()}`)"
                   >
-                    {{ r.title }}
+                    <span>
+                      {{ r.title }}
+                    </span>
                   </el-menu-item>
                   <!-- <el-sub-menu
                     v-else
@@ -43,7 +53,7 @@
                     </template>
                     <el-menu-item
                       v-for="(r2, index3) in r.routerList" :key="index3" :index="index + '-' + index2 + '-' + index3"
-                      @click="router.push({ name: r2.router })"
+                      @click="clickToRouterChange(r2.routerName, `${index}-${index2}`)"
                     >
                       {{ r2.title }}
                     </el-menu-item>
@@ -64,7 +74,7 @@
           </div>
           <template v-slot:dropdown>
             <el-dropdown-menu v-for="item in userInfoList" :key="item">
-              <el-dropdown-item :command="item.router">
+              <el-dropdown-item :command="item.routerName">
                 {{ item.title }}
               </el-dropdown-item>
             </el-dropdown-menu>
@@ -83,26 +93,35 @@
           <!-- 單層路由 -->
           <el-menu-item
             v-if="m.routerList.length === 0"
-            :index="index"
-            @click="clickToRouterChange(m.router)"
+            :index="index.toString()"
+            :class="{ 'is-active': isActive(index.toString()) }"
+            @click="clickToRouterChange(m.routerName, index.toString())"
           >
-            {{ m.title }}
+            <span>
+              {{ m.title }}
+            </span>
           </el-menu-item>
           <!-- 多層路由 -->
           <el-sub-menu
             v-else
-            :index="index"
+            :index="index.toString()"
+            :class="{ 'is-active': isActive(index.toString()) }"
           >
             <template #title>
-              {{ m.title }}
+              <span>
+                {{ m.title }}
+              </span>
             </template>
             <div v-for="(r, index2) in m.routerList" :key="index2">
               <el-menu-item
-                :index="index + '-' + index2"
                 v-if="r.routerList.length === 0"
-                @click="clickToRouterChange(r.router)"
+                :index="index.toString() + '-' + index2.toString()"
+                :class="{ 'is-active': isActive(index.toString() + '-' + index2.toString()) }"
+                @click="clickToRouterChange(r.routerName, `${index}-${index2}`)"
               >
-                {{ r.title }}
+                <span>
+                  {{ r.title }}
+                </span>
               </el-menu-item>
               <!-- <el-sub-menu
                 v-else
@@ -113,7 +132,7 @@
                 </template>
                 <el-menu-item
                   v-for="(r2, index3) in r.routerList" :key="index3" :index="index + '-' + index2 + '-' + index3"
-                  @click="clickToRouterChange(r2.router)"
+                  @click="clickToRouterChange(r2.routerName, `${index}-${index2}`)"
                 >
                   {{ r2.title }}
                 </el-menu-item>
@@ -127,41 +146,42 @@
 </template>
 
 <script setup lang="ts">
+const route = useRoute()
 const router = useRouter()
-// const currentActive = ref('Resume')
+const routerActiveIndex = ref('0-0')
 const drawer = ref(false)
 const userName = ref('user')
 
 const menuList = ref([
   {
     title: '任務',
-    router: '',
+    routerName: 'Mission',
     routerList: [
       {
         title: '任務列表',
-        router: 'MissionList',
+        routerName: 'MissionList',
         routerList: []
       },
       {
         title: '建立任務',
-        router: 'MissionCreate',
+        routerName: 'MissionCreate',
         routerList: []
       }
       // {
       //   title: '我的任務',
-      //   router: '',
+      //   routerName: '',
       //   routerList: [
       //     {
       //       title: '已發布任務',
-      //       router: 'MissonDeploy'
+      //       routerName: 'MissonDeploy'
       //     },
       //     {
       //       title: '已儲存任務',
-      //       router: 'MissonStore'
+      //       routerName: 'MissonStore'
       //     },
       //     {
       //       title: '已應徵任務',
-      //       router: 'MissonApply'
+      //       routerName: 'MissonApply'
       //     }
       //   ]
       // }
@@ -169,21 +189,21 @@ const menuList = ref([
   },
   {
     title: '用戶資料',
-    router: 'User',
+    routerName: 'User',
     routerList: []
   },
   {
     title: '設定',
-    router: '',
+    routerName: 'Setting',
     routerList: [
       {
         title: '帳號設定',
-        router: 'AccountSetting',
+        routerName: 'AccountSetting',
         routerList: []
       },
       {
         title: '通知設定',
-        router: 'NotifySetting',
+        routerName: 'NotifySetting',
         routerList: []
       }
     ]
@@ -193,7 +213,7 @@ const menuList = ref([
 const userInfoList = ref([
   {
     title: '登出',
-    router: '',
+    routerName: '',
     routerList: []
   }
 ])
@@ -208,22 +228,24 @@ function handleUserCommand (cmd: string) {
   }
 }
 
-// watch(() => router.currentRoute.value.name, (newValue) => {
-//   for(let i = 0; i < menuList.value.length; i++) {
-//     if (menuList.value[i].router === newValue) {
-//       currentActive.value = newValue
-//       break
-//     }
-//   }
-// }, { deep: true })
+function isActive(index: string) {
+  return routerActiveIndex.value.startsWith(index)
+}
 
-function clickToRouterChange(routerName: string | '') {
+function clickToRouterChange(routerName: string | '', currentIndex: string | '') {
+  routerActiveIndex.value = currentIndex
   drawer.value = false
   router.push({ name: routerName })
 }
 </script>
 
 <style lang="scss" scoped>
+  .is-active {
+    .el-sub-menu__title span{
+      color: #307bf4 !important;
+    }
+  }
+
   .headerContainer{
     position: relative;
     padding: 5px 20px;

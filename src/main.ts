@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import '@/style.css'
+import '@/style.scss'
 import '@/assets/tailwind.css' // 引入 Tailwind CSS
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'

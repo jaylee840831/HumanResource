@@ -5,6 +5,8 @@ html body{
   font-family: 'Noto Sans TC', sans-serif;
 }
 
+$secondaryColor: #307bf4;
+
 /* form表單 */
 .formTitle {
   font-size: 1.5rem;
@@ -21,7 +23,7 @@ html body{
 }
 
 textarea:focus{
-  border: 1px solid #409eff !important;
+  border: 1px solid $secondaryColor !important;
   outline: none;
 }
 
@@ -61,9 +63,3 @@ textarea{
     display: inline-block;
   }
 }
-
-/* .el-autocomplete{
-  .el-input{
-    height: 50px !important;
-  }
-} */
