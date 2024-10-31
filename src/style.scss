@@ -63,3 +63,15 @@ textarea{
     display: inline-block;
   }
 }
+
+.el-menu .el-menu-item{
+  background-color: transparent !important;
+}
+
+.el-menu .el-menu-item:hover {
+  background-color: transparent !important;
+}
+
+.el-sub-menu__title:hover{
+  background-color: transparent !important;
+}

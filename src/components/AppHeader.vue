@@ -15,7 +15,8 @@
               <el-menu-item
                 v-if="m.routerList.length === 0"
                 :index="index.toString()"
-                :class="{ 'is-active': isActive(index.toString()) }"
+                class="mr-2"
+                :class="{ 'is-no-active': !isActive(index.toString()) }"
                 @click="clickToRouterChange(m.routerName, index.toString())"
               >
                 <span>
@@ -25,8 +26,9 @@
               <!-- 多層路由 -->
               <el-sub-menu
                 v-else
-                :class="{ 'is-active': isActive(index.toString()) }"
                 :index="index.toString()"
+                class="mr-2"
+                :class="{ 'is-active': isActive(index.toString()) }"
               >
                 <template #title>
                   <span>
@@ -37,7 +39,6 @@
                   <el-menu-item
                     v-if="r.routerList.length === 0"
                     :index="index.toString() + '-' + index2.toString()"
-                    :class="{ 'is-active': isActive(index.toString() + '-' + index2.toString()) }"
                     @click="clickToRouterChange(r.routerName, `${index.toString()}-${index2.toString()}`)"
                   >
                     <span>
@@ -94,7 +95,7 @@
           <el-menu-item
             v-if="m.routerList.length === 0"
             :index="index.toString()"
-            :class="{ 'is-active': isActive(index.toString()) }"
+            :class="{ 'is-no-active': !isActive(index.toString()) }"
             @click="clickToRouterChange(m.routerName, index.toString())"
           >
             <span>
@@ -116,7 +117,6 @@
               <el-menu-item
                 v-if="r.routerList.length === 0"
                 :index="index.toString() + '-' + index2.toString()"
-                :class="{ 'is-active': isActive(index.toString() + '-' + index2.toString()) }"
                 @click="clickToRouterChange(r.routerName, `${index}-${index2}`)"
               >
                 <span>
@@ -240,10 +240,12 @@ function clickToRouterChange(routerName: string | '', currentIndex: string | '')
 </script>
 
 <style lang="scss" scoped>
-  .is-active {
-    .el-sub-menu__title span{
-      color: #307bf4 !important;
-    }
+  .is-active .el-sub-menu__title span{
+    color: #307bf4 !important;
+  }
+
+  .is-no-active span{
+    color: black;
   }
 
   .headerContainer{
@@ -286,21 +288,6 @@ function clickToRouterChange(routerName: string | '', currentIndex: string | '')
     border: 1px transparent solid !important;
   }
 
-  .el-menu .el-menu-item.is-active {
-    // color: blue !important;
-    // border-bottom: 3px solid  blue  !important;
-  }
-
-  .el-menu .el-menu-item {
-    background-color: transparent !important;
-    // color: blue !important;
-    margin-right: 5px;
-  }
-
-  .el-menu .el-menu-item:hover {
-    // border-bottom: 3px solid  blue  !important;
-  }
-
   :deep(.el-page-header__back){
     display: none;
   }
@@ -324,7 +311,8 @@ function clickToRouterChange(routerName: string | '', currentIndex: string | '')
     cursor: pointer;
   }
   .dropdownTitle:hover{
-    background-color: rgb(59 130 246 / 0.1);
+    // border-radius: 5px;
+    // background-color: rgb(59 130 246 / 0.1);
   }
   .dropdownTitle img{
     width: 32px;
