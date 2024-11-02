@@ -13,36 +13,36 @@
             <div v-for="(m, index) in menuList" :key="index">
               <!-- 單層路由 -->
               <el-menu-item
-                v-if="m.routerList.length === 0"
+                v-if="!m.children && m?.meta?.show"
                 :index="index.toString()"
                 class="mr-2"
                 :class="{ 'is-no-active': !isActive(index.toString()) }"
-                @click="clickToRouterChange(m.routerName, index.toString())"
+                @click="clickToRouterChange(m.name as string, index.toString())"
               >
                 <span>
-                  {{ m.title }}
+                  {{ m?.meta?.title }}
                 </span>
               </el-menu-item>
               <!-- 多層路由 -->
               <el-sub-menu
-                v-else
+                v-else-if="m.children && m?.meta?.show"
                 :index="index.toString()"
                 class="mr-2"
                 :class="{ 'is-active': isActive(index.toString()) }"
               >
                 <template #title>
                   <span>
-                    {{ m.title }}
+                    {{ m?.meta?.title }}
                   </span>
                 </template>
-                <div v-for="(r, index2) in m.routerList" :key="index2">
+                <div v-for="(r, index2) in m.children" :key="index2">
                   <el-menu-item
-                    v-if="r.routerList.length === 0"
+                    v-if="!r.children && r?.meta?.show"
                     :index="index.toString() + '-' + index2.toString()"
-                    @click="clickToRouterChange(r.routerName, `${index.toString()}-${index2.toString()}`)"
+                    @click="clickToRouterChange(r.name as string, `${index.toString()}-${index2.toString()}`)"
                   >
                     <span>
-                      {{ r.title }}
+                      {{ r?.meta?.title }}
                     </span>
                   </el-menu-item>
                   <!-- <el-sub-menu
@@ -93,34 +93,34 @@
         <div v-for="(m, index) in menuList" :key="index">
           <!-- 單層路由 -->
           <el-menu-item
-            v-if="m.routerList.length === 0"
+            v-if="!m.children && m?.meta?.show"
             :index="index.toString()"
             :class="{ 'is-no-active': !isActive(index.toString()) }"
-            @click="clickToRouterChange(m.routerName, index.toString())"
+            @click="clickToRouterChange(m.name as string, index.toString())"
           >
             <span>
-              {{ m.title }}
+              {{ m?.meta?.title }}
             </span>
           </el-menu-item>
           <!-- 多層路由 -->
           <el-sub-menu
-            v-else
+            v-else-if="m.children && m?.meta?.show"
             :index="index.toString()"
             :class="{ 'is-active': isActive(index.toString()) }"
           >
             <template #title>
               <span>
-                {{ m.title }}
+                {{ m?.meta?.title }}
               </span>
             </template>
-            <div v-for="(r, index2) in m.routerList" :key="index2">
+            <div v-for="(r, index2) in m.children" :key="index2">
               <el-menu-item
-                v-if="r.routerList.length === 0"
+                v-if="!r.children && r?.meta?.show"
                 :index="index.toString() + '-' + index2.toString()"
-                @click="clickToRouterChange(r.routerName, `${index}-${index2}`)"
+                @click="clickToRouterChange(r.name as string, `${index}-${index2}`)"
               >
                 <span>
-                  {{ r.title }}
+                  {{ r?.meta?.title }}
                 </span>
               </el-menu-item>
               <!-- <el-sub-menu
@@ -146,69 +146,72 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
+import { getRouter } from '@/router/index'
+import { RouteRecordRaw } from 'vue-router';
+
 const router = useRouter()
 const routerActiveIndex = ref('0-0')
 const drawer = ref(false)
 const userName = ref('user')
+const menuList = ref<RouteRecordRaw[]>([])
 
-const menuList = ref([
-  {
-    title: '任務',
-    routerName: 'Mission',
-    routerList: [
-      {
-        title: '任務列表',
-        routerName: 'MissionList',
-        routerList: []
-      },
-      {
-        title: '建立任務',
-        routerName: 'MissionCreate',
-        routerList: []
-      }
-      // {
-      //   title: '我的任務',
-      //   routerName: '',
-      //   routerList: [
-      //     {
-      //       title: '已發布任務',
-      //       routerName: 'MissonDeploy'
-      //     },
-      //     {
-      //       title: '已儲存任務',
-      //       routerName: 'MissonStore'
-      //     },
-      //     {
-      //       title: '已應徵任務',
-      //       routerName: 'MissonApply'
-      //     }
-      //   ]
-      // }
-    ]
-  },
-  {
-    title: '用戶資料',
-    routerName: 'User',
-    routerList: []
-  },
-  {
-    title: '設定',
-    routerName: 'Setting',
-    routerList: [
-      {
-        title: '帳號設定',
-        routerName: 'AccountSetting',
-        routerList: []
-      },
-      {
-        title: '通知設定',
-        routerName: 'NotifySetting',
-        routerList: []
-      }
-    ]
-  }
-])
+// const menuList = ref([
+//   {
+//     title: '任務',
+//     routerName: 'Mission',
+//     routerList: [
+//       {
+//         title: '任務列表',
+//         routerName: 'MissionList',
+//         routerList: []
+//       },
+//       {
+//         title: '建立任務',
+//         routerName: 'MissionCreate',
+//         routerList: []
+//       }
+//       // {
+//       //   title: '我的任務',
+//       //   routerName: '',
+//       //   routerList: [
+//       //     {
+//       //       title: '已發布任務',
+//       //       routerName: 'MissonDeploy'
+//       //     },
+//       //     {
+//       //       title: '已儲存任務',
+//       //       routerName: 'MissonStore'
+//       //     },
+//       //     {
+//       //       title: '已應徵任務',
+//       //       routerName: 'MissonApply'
+//       //     }
+//       //   ]
+//       // }
+//     ]
+//   },
+//   {
+//     title: '用戶資料',
+//     routerName: 'User',
+//     routerList: []
+//   },
+//   {
+//     title: '設定',
+//     routerName: 'Setting',
+//     routerList: [
+//       {
+//         title: '帳號設定',
+//         routerName: 'AccountSetting',
+//         routerList: []
+//       },
+//       {
+//         title: '通知設定',
+//         routerName: 'NotifySetting',
+//         routerList: []
+//       }
+//     ]
+//   }
+// ])
 
 const userInfoList = ref([
   {
@@ -237,6 +240,14 @@ function clickToRouterChange(routerName: string | '', currentIndex: string | '')
   drawer.value = false
   router.push({ name: routerName })
 }
+
+watch(() => drawer.value, () => {
+  menuList.value = getRouter().map(route => route)
+})
+
+onMounted(() => {
+  menuList.value = getRouter().map(route => route)
+})
 </script>
 
 <style lang="scss" scoped>

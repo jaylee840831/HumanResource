@@ -42,7 +42,7 @@ watchEffect(() => {
   }
 })
 
-watch(() => router.name, (newValue) => {
+watch(() => router.name, () => {
   handleResize()
 }, { deep: true })
 </script>

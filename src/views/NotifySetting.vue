@@ -1,6 +1,6 @@
 <template>
   <div class="userPage">
-    <div class="userContainer h-full">
+    <div class="userContainer">
       <el-form
         :hide-required-asterisk="true"
         class="flex-auto p-6 shadow"
@@ -45,31 +45,11 @@ function openBrowserNotify () {
 </script>
 
 <style scoped>
-.centerContainer {
-    width: 100%;
-    height: 100vh;
-    height: 100dvh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
 .userContainer {
   display: flex;
   margin: auto;
   width: 500px;
+  height: 90dvh;
   padding: 1.5rem 2rem 1rem;
   color: #000;
 
