@@ -16,7 +16,7 @@
                 v-if="m.routerList.length === 0"
                 :index="index.toString()"
                 class="mr-2"
-                :class="{ 'is-no-active': !isActive(index.toString()) }"
+                :class="{ 'is-no-active': !isActive(index.toString(), m.routerName) }"
                 @click="clickToRouterChange(m.routerName, index.toString())"
               >
                 <span>
@@ -28,7 +28,7 @@
                 v-else
                 :index="index.toString()"
                 class="mr-2"
-                :class="{ 'is-active': isActive(index.toString()) }"
+                :class="{ 'is-active': isActive(index.toString(), m.routerName) }"
               >
                 <template #title>
                   <span>
@@ -39,6 +39,7 @@
                   <el-menu-item
                     v-if="r.routerList.length === 0"
                     :index="index.toString() + '-' + index2.toString()"
+                    :class="{ 'is-active': isActive(index.toString() + '-' + index2.toString(), r.routerName) }"
                     @click="clickToRouterChange(r.routerName, `${index.toString()}-${index2.toString()}`)"
                   >
                     <span>
@@ -48,12 +49,15 @@
                   <el-sub-menu
                     v-else
                     :index="index.toString() + '-' + index2.toString()"
+                    :class="{ 'is-active': isActive(index.toString() + '-' + index2.toString(), r.routerName) }"
                   >
                     <template #title>
                       {{ r.title }}
                     </template>
                     <el-menu-item
-                      v-for="(r2, index3) in r.routerList" :key="index3" :index="index.toString() + '-' + index2.toString() + '-' + index3.toString()"
+                      v-for="(r2, index3) in r.routerList"
+                      :key="index3"
+                      :index="index.toString() + '-' + index2.toString() + '-' + index3.toString()"
                       @click="clickToRouterChange(r2.routerName, `${index.toString()}-${index2.toString()}-${index3.toString()}`)"
                     >
                       {{ r2.title }}
@@ -95,7 +99,7 @@
           <el-menu-item
             v-if="m.routerList.length === 0"
             :index="index.toString()"
-            :class="{ 'is-no-active': !isActive(index.toString()) }"
+            :class="{ 'is-active': isActive(index.toString(), m.routerName) }"
             @click="clickToRouterChange(m.routerName, index.toString())"
           >
             <span>
@@ -106,7 +110,7 @@
           <el-sub-menu
             v-else
             :index="index.toString()"
-            :class="{ 'is-active': isActive(index.toString()) }"
+            :class="{ 'is-active': isActive(index.toString(), m.routerName) }"
           >
             <template #title>
               <span>
@@ -117,6 +121,7 @@
               <el-menu-item
                 v-if="r.routerList.length === 0"
                 :index="index.toString() + '-' + index2.toString()"
+                :class="{ 'is-active': isActive(index.toString() + '-' + index2.toString(), r.routerName) }"
                 @click="clickToRouterChange(r.routerName, `${index}-${index2}`)"
               >
                 <span>
@@ -126,6 +131,7 @@
               <el-sub-menu
                 v-else
                 :index="index.toString() + '-' + index2.toString()"
+                :class="{ 'is-active': isActive(index.toString() + '-' + index2.toString(), r.routerName) }"
               >
                 <template #title>
                   {{ r.title }}
@@ -149,6 +155,7 @@
 import { getRouter } from '@/router/index'
 import { menuItem, routerItem } from '@/struct/router';
 
+const route = useRoute()
 const router = useRouter()
 const routerActiveIndex = ref('0-0')
 const drawer = ref(false)
@@ -173,7 +180,8 @@ function handleUserCommand (cmd: string) {
   }
 }
 
-function isActive(index: string) {
+function isActive(index: string, name: string) {
+  if (route.name?.toString() === name) routerActiveIndex.value = index
   return routerActiveIndex.value.startsWith(index)
 }
 
@@ -184,20 +192,27 @@ function clickToRouterChange(routerName: string | '', currentIndex: string | '')
 }
 
 // 遞迴取得子路由
-function setChildrenMenu (child: routerItem[], result: menuItem[]) {
+function setChildrenMenu (child: routerItem[]) {
+  const result: menuItem[] = []
+
   child.forEach((item) => {
     if (item.children && item.meta.show) {
-      setChildrenMenu(item.children, result)
+      result.push({
+        title: item.meta.title,
+        routerName: item.name,
+        routerList: setChildrenMenu(item.children)
+      })
     } else {
       if (item.meta.show) {
         result.push({
-            title: item.meta.title,
-            routerName: item.name,
-            routerList: []
-          })
+          title: item.meta.title,
+          routerName: item.name,
+          routerList: []
+        })
       }
     }
   })
+
   return result
 }
 
@@ -215,7 +230,7 @@ function setCurrentMenu () {
       children.forEach((item) => {
         if (item.children && item.meta.show) {
           let subChild: menuItem[] = []
-          subChild = setChildrenMenu(item.children, subChild)
+          subChild = setChildrenMenu(item.children)
 
           child.push({
             title: item.meta.title,
@@ -248,11 +263,9 @@ function setCurrentMenu () {
       }
     }
   })
-}
 
-watch(() => drawer.value, () => {
-  setCurrentMenu()
-})
+  // console.log(menuList.value)
+}
 
 onMounted(() => {
   setCurrentMenu()
