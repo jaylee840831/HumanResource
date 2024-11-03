@@ -57,31 +57,11 @@
 </template>
 
 <script setup lang="ts">
+import { missionForm, searchItem } from '@/struct/form';
+
 const currentPage = ref(1)
 const pageSize = ref(5)
-
-interface selectedLanguage {
-  lan: string;
-  level: string;
-}
-
-interface mission {
-  missionName: string,
-  startday: string,
-  endday: string,
-  type: string,
-  currency: string,
-  money: string,
-  location: string,
-  userName: string;
-  phone: string;
-  email: string;
-  experience: string;
-  selectedSkills: string[];
-  selectedLanguages: selectedLanguage[];
-}
-
-const missionData = ref<mission[]>([])
+const missionData = ref<missionForm[]>([])
 
 // 切換頁數獲得的當前資料
 const paginatedData = computed(() => {
@@ -96,11 +76,6 @@ const paginatedData = computed(() => {
 // 頁碼變化
 const handleCurrentChange = (page: number) => {
   currentPage.value = page
-}
-
-interface searchItem {
-  value: string
-  link: string
 }
 
 const state2 = ref('')
@@ -129,7 +104,7 @@ const loadAll = () => {
     { value: 'python', link: 'https://github.com/ElemeFE/mint-ui' },
     { value: '台積電', link: 'https://github.com/vuejs/vuex' },
     { value: '中信', link: 'https://github.com/vuejs/vue-router' },
-    { value: '中華郵政', link: 'https://github.com/babel/babel' },
+    { value: '中華郵政', link: 'https://github.com/babel/babel' }
   ]
 }
 
@@ -199,8 +174,6 @@ onMounted(() => {
 目前在聰泰科技擔任網頁工程師，以Vue開發響應式網頁畫面，會與設計師討論畫面排版以及如何優化使用者體驗。`,
       selectedSkills: [
         '影片剪輯',
-        '企劃行銷',
-        '企劃行銷',
         '企劃行銷'
       ],
       selectedLanguages: [

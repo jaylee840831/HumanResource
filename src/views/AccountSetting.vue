@@ -109,26 +109,10 @@
 </template>
 
 <script setup lang="ts">
-interface selectedLanguage {
-  lan: string;
-  level: string;
-}
-
-interface userForm {
-  userName: string;
-  phone: string;
-  email: string;
-  password: string,
-  checkPassword: string,
-  birthday: string;
-  experience: string;
-  selectedSkills: [];
-  selectedLanguages: selectedLanguage[];
-}
+import { accountForm } from '@/struct/form'
 
 const formDom = ref()
-
-const formData = ref<userForm>({
+const formData = ref<accountForm>({
   userName: '',
   phone: '',
   email: '',

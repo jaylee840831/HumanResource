@@ -215,31 +215,11 @@
 </template>
 
 <script setup lang="ts">
-interface selectedLanguage {
-  lan: string;
-  level: string;
-}
-
-interface mission {
-  missionName: string,
-  startday: string,
-  endday: string,
-  type: string,
-  currency: string,
-  money: string,
-  location: string,
-  userName: string;
-  phone: string;
-  email: string;
-  experience: string;
-  selectedSkills: [];
-  selectedLanguages: selectedLanguage[];
-}
+import { missionForm, selectedLanguage } from '@/struct/form';
 
 const isDisabled = ref(true)
 const formDom = ref()
-
-const formData = ref<mission>({
+const formData = ref<missionForm>({
   missionName: '',
   startday: '',
   endday: '',

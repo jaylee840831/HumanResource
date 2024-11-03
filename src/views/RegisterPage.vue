@@ -76,7 +76,9 @@
 </template>
 
 <script setup lang="ts">
-const formData = ref({
+import { registerForm } from '@/struct/form';
+
+const formData = ref<registerForm>({
   userName: '',
   phone: '',
   email: '',

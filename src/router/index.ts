@@ -40,7 +40,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/mission',
-    name: '',
+    name: 'Mission',
     component: AppLayout,
     meta: {
       title: '任務',
@@ -59,7 +59,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/mission/create',
         name: 'MissionCreate',
-        component: MissionCreate,
+        component: MissionEdit,
         meta: {
           title: '建立任務',
           show: true
@@ -73,6 +73,55 @@ const routes: Array<RouteRecordRaw> = [
           title: '編輯任務',
           show: false
         }
+      },
+      {
+        path: '/mission/mine',
+        name: 'MissionMine',
+        component: AppLayout,
+        meta: {
+          title: '我的任務',
+          show: false
+        },
+        children: [
+          {
+            path: '/mission/deploy',
+            name: 'MissionDeploy',
+            component: MissionList,
+            meta: {
+              title: '已發布任務',
+              show: true
+            }
+            // children: [
+            //   {
+            //     path: '/mission/hihi',
+            //     name: 'MissionHIHI',
+            //     component: MissionList,
+            //     meta: {
+            //       title: '測試',
+            //       show: true
+            //     }
+            //   }
+            // ]
+          },
+          {
+            path: '/mission/store',
+            name: 'MissionStore',
+            component: MissionEdit,
+            meta: {
+              title: '已儲存任務',
+              show: true
+            }
+          },
+          {
+            path: '/mission/apply',
+            name: 'MissionDeploy',
+            component: MissionEdit,
+            meta: {
+              title: '已應徵任務',
+              show: true
+            }
+          }
+        ]
       }
     ]
   },
@@ -87,7 +136,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/setting',
-    name: '',
+    name: 'Setting',
     component: AppLayout,
     meta: {
       title: '設定',

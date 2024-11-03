@@ -61,9 +61,10 @@
 </template>
 
 <script setup lang="ts">
-const router = useRouter()
+import { loginForm } from '@/struct/form';
 
-const formData = ref({
+const router = useRouter()
+const formData = ref<loginForm>({
   userName: '',
   password: ''
 })
