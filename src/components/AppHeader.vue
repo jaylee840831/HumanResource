@@ -159,7 +159,7 @@ const route = useRoute()
 const router = useRouter()
 const routerActiveIndex = ref('0-0')
 const drawer = ref(false)
-const userName = ref('user')
+const userName = ref(window.localStorage.getItem('user_name'))
 const menuList = ref<menuItem[]>([])
 
 const userInfoList = ref([
@@ -173,6 +173,7 @@ const userInfoList = ref([
 function handleUserCommand (cmd: string) {
   switch (cmd) {
   case '':
+    localStorage.clear()
     router.push('/')
     break
   default:

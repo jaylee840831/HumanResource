@@ -1,0 +1,13 @@
+{
+  "i18n":{
+    "general":{
+      "success": "成功",
+      "error": "失敗"
+    },
+    "login":{
+      "plsInputEmail": "請輸入Email",
+      "plsInputPassword": "請輸入密碼",
+      "loginSuccess": "登入成功"
+    }
+  }
+}

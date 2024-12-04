@@ -6,19 +6,20 @@
         :hide-required-asterisk="true"
         ref="loginFormRef"
         :model="formData"
+        :rules="loginRules"
         class="flex-auto p-6 shadow"
       >
         <p class="formTitle">
           即時人力平台
         </p>
         <el-form-item
-          prop="userName"
+          prop="email"
           class="formInput"
         >
           <el-input
-            v-model="formData.userName"
+            v-model="formData.email"
             autocomplete="off"
-            placeholder="電子郵件或電話"
+            placeholder="電子郵件"
           />
         </el-form-item>
         <el-form-item
@@ -61,16 +62,55 @@
 </template>
 
 <script setup lang="ts">
-import { loginForm } from '@/struct/form';
+import { useI18n } from 'vue-i18n'
+import { ElForm } from 'element-plus'
+import { loginForm } from '@/struct/form'
+import { loginApi } from '@/api/auth/index'
+import { useNotify } from '@/composables/useNotify'
 
+const { t } = useI18n()
 const router = useRouter()
+const { notify } = useNotify()
+const loginFormRef = ref(ElForm)
 const formData = ref<loginForm>({
-  userName: '',
+  email: '',
   password: ''
 })
+const loginRules = {
+  email: [{ required: true, trigger: 'blur', validator: validateEmail }],
+  password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+}
+
+function validateEmail (rule: any, value: string, callback: Function) {
+  if (value.length < 1) {
+    callback(new Error(t('i18n.login.plsInputEmail')))
+  } else {
+    callback()
+  }
+}
+
+function validatePassword (rule: any, value: string, callback: Function) {
+  if (value.length < 1) {
+    callback(new Error(t('i18n.login.plsInputPassword')))
+  } else {
+    callback()
+  }
+}
 
 function login () {
-  router.push({ name: 'MissionList' })
+  loginFormRef.value.validate((valid: any) => {
+    if (valid) {
+      loginApi(formData.value)
+        .then((res) => {
+          window.localStorage.setItem('user_id', res?.data?.user_id)
+          window.localStorage.setItem('user_name', res?.data?.user_name)
+          window.localStorage.setItem('access_token', res?.data?.access_token)
+          notify('success', t('i18n.login.loginSuccess'), '')
+          router.push({ name: 'MissionList' })
+        }).catch((err) => {
+        })
+    }
+  })
 }
 
 function register () {

@@ -9,7 +9,7 @@ export interface searchItem {
 }
 
 export interface loginForm{
-  userName: string,
+  email: string,
   password: string
 }
 
@@ -33,7 +33,7 @@ export interface missionForm {
   phone: string;
   email: string;
   experience: string;
-  selectedSkills: [];
+  selectedSkills: string[];
   selectedLanguages: selectedLanguage[];
 }
 
@@ -43,7 +43,7 @@ export interface userForm {
   email: string;
   birthday: string;
   experience: string;
-  selectedSkills: [];
+  selectedSkills: string[];
   selectedLanguages: selectedLanguage[];
 }
 
@@ -55,6 +55,6 @@ export interface accountForm {
   checkPassword: string,
   birthday: string;
   experience: string;
-  selectedSkills: [];
+  selectedSkills: string[];
   selectedLanguages: selectedLanguage[];
 }
