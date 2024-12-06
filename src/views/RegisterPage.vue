@@ -76,9 +76,19 @@
 </template>
 
 <script setup lang="ts">
-import { registerForm } from '@/struct/form';
+import { useI18n } from 'vue-i18n'
+import { ElForm } from 'element-plus'
+import { registerForm } from '@/struct/form'
+// import { useNotify } from '@/composables/useNotify'
+import { ElMessage } from 'element-plus'
+import { registerApi } from '@/api/user/index'
 
-const formData = ref<registerForm>({
+
+const { t } = useI18n()
+const loginFormRef = ref(ElForm)
+const router = useRouter()
+// const { notify } = useNotify()
+const formData = ref({
   userName: '',
   phone: '',
   email: '',
@@ -87,6 +97,26 @@ const formData = ref<registerForm>({
 })
 
 function register () {
+  loginFormRef.value.validate((valid: any) => {
+    if (valid) {
+      const newForm = <registerForm>{
+        username: formData.value.userName,
+        password: formData.value.password,
+        phone_number: formData.value.phone,
+        email: formData.value.email,
+        is_active: true,
+        is_superuser: false,
+        birth_date: formData.value.birthday
+      }
+      registerApi(newForm)
+        .then((res) => {
+          // notify('success', t('i18n.register.registerSuccess'), '')
+          ElMessage.success(t('i18n.register.registerSuccess'))
+          router.push({ name: 'Login' })
+        }).catch((err) => {
+        })
+    }
+  })
 }
 
 const rules = {

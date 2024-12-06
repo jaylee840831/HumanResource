@@ -1,11 +1,12 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 // import { useI18n } from 'vue-i18n'
-import { useNotify } from '@/composables/useNotify'
+// import { useNotify } from '@/composables/useNotify'
 
 // const { t } = useI18n()
 const router = useRouter()
-const { notify } = useNotify()
+// const { notify } = useNotify()
 
 const api: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost',
@@ -35,7 +36,8 @@ api.interceptors.response.use(
     return response
   },
   (error) => {
-    notify('error', '錯誤', error)
+    // notify('error', '錯誤', error)
+    ElMessage.error(error)
 
     // 響應錯誤處理
     if (error.response) {

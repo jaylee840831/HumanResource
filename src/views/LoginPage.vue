@@ -63,14 +63,14 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { ElForm } from 'element-plus'
+import { ElForm, ElMessage } from 'element-plus'
 import { loginForm } from '@/struct/form'
 import { loginApi } from '@/api/auth/index'
-import { useNotify } from '@/composables/useNotify'
+// import { useNotify } from '@/composables/useNotify'
 
 const { t } = useI18n()
 const router = useRouter()
-const { notify } = useNotify()
+// const { notify } = useNotify()
 const loginFormRef = ref(ElForm)
 const formData = ref<loginForm>({
   email: '',
@@ -103,9 +103,10 @@ function login () {
       loginApi(formData.value)
         .then((res) => {
           window.localStorage.setItem('user_id', res?.data?.user_id)
-          window.localStorage.setItem('user_name', res?.data?.user_name)
+          window.localStorage.setItem('user_name', res?.data?.username)
           window.localStorage.setItem('access_token', res?.data?.access_token)
-          notify('success', t('i18n.login.loginSuccess'), '')
+          ElMessage.success(t('i18n.login.loginSuccess'))
+          // notify('success', t('i18n.login.loginSuccess'), '')
           router.push({ name: 'MissionList' })
         }).catch((err) => {
         })

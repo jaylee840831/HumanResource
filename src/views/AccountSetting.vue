@@ -6,7 +6,7 @@
         ref="formDom"
         :model="formData"
         :rules="rules"
-        class="flex-auto p-6 shadow"
+        class="flex-auto p-6 shadow mb-6"
       >
         <p class="formSubTitle">
           基本資料
@@ -60,26 +60,35 @@
             更新
           </el-button>
         </el-form-item>
-
+      </el-form>
+      <el-form
+      :hide-required-asterisk="true"
+      ref="passwordDom"
+      :model="passwordData"
+      :rules="passwordRules"
+      class="flex-auto p-6 shadow"
+      >
         <p class="formSubTitle">
           密碼
         </p>
         <el-form-item
           prop="password"
           class="formInput"
+          :rules="passwordRules"
         >
           <el-input
-            v-model="formData.password"
+            v-model="passwordData.password"
             autocomplete="off"
             placeholder="密碼"
           />
         </el-form-item>
         <el-form-item
-          prop="password"
+          prop="checkPassword"
           class="formInput"
+          :rules="passwordRules"
         >
           <el-input
-            v-model="formData.checkPassword"
+            v-model="passwordData.checkPassword"
             autocomplete="off"
             placeholder="確認密碼"
           />
@@ -105,29 +114,104 @@
         </el-form-item>
       </el-form>
     </div>
+    <el-dialog
+      v-model="isDialogVisible"
+      :title="t('i18n.general.attention')"
+      :close-on-click-modal="false"
+    >
+      <p v-if="dialogType === 'delete'">{{ t('i18n.user.delete') }}</p>
+      <div class="flex justify-end">
+        <div class="flex">
+          <el-button
+            @click="onCancel">
+            取消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="onConfirm">
+            確定
+          </el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { accountForm } from '@/struct/form'
+import { userForm, userFormUpdate } from '@/struct/form'
+import { useI18n } from 'vue-i18n'
+// import { useNotify } from '@/composables/useNotify'
+import { getUserApi, updateUserApi, updatePasswordApi, deleteUserApi } from '@/api/user/index'
+import { ElMessage } from 'element-plus'
 
+const { t } = useI18n()
+// const { notify } = useNotify()
+const router = useRouter()
+const dialogType = ref('')
+const isDialogVisible = ref(false)
+const userID = ref(window.localStorage.getItem('user_id') || '')
 const formDom = ref()
-const formData = ref<accountForm>({
+const passwordDom = ref()
+const formData = ref<userForm>({
   userName: '',
   phone: '',
   email: '',
-  password: '',
-  checkPassword: '',
   birthday: '',
   experience: '',
   selectedSkills: [],
   selectedLanguages: []
 })
+const passwordData = ref({
+  password: '',
+  checkPassword: ''
+})
+
+const openDialog = () => {
+  isDialogVisible.value = true
+}
+
+const closeDialog = () => {
+  dialogType.value = ''
+  isDialogVisible.value = false
+}
+
+const onConfirm = () => {
+  switch (dialogType.value) {
+    case 'delete':
+      deleteUserApi(userID.value)
+        .then((res) => {
+          ElMessage.success(t('i18n.general.deleteSuccess'))
+          logout()
+        }).catch((err) => {
+        })
+      break
+    default:
+      break
+  }
+  closeDialog()
+}
+
+const onCancel = () => {
+  closeDialog()
+}
 
 function saveAccount () {
   formDom.value.validate((valid: boolean) => {
     if (valid) {
-      alert('成功')
+      const newForm = <userFormUpdate>{
+        username: formData.value.userName,
+        phone_number: formData.value.phone,
+        email: formData.value.email,
+        is_active: true,
+        birth_date: formData.value.birthday
+      }
+      updateUserApi(userID.value, newForm)
+        .then((res) => {
+          window.localStorage.setItem('user_name', res?.data?.username)
+          ElMessage.success(t('i18n.general.saveSuccess'))
+          // notify('success', t('i18n.general.saveSuccess'), '')
+        }).catch((err) => {
+        })
     } else {
       return false
     }
@@ -135,12 +219,25 @@ function saveAccount () {
 }
 
 function deleteAccount () {
+  dialogType.value = 'delete'
+  openDialog()
+}
+
+function logout () {
+  localStorage.clear()
+  router.push('/')
 }
 
 function savePassword () {
-  formDom.value.validate((valid: boolean) => {
+  passwordDom.value.validate(async (valid: boolean) => {
     if (valid) {
-      alert('成功')
+      updatePasswordApi(userID.value, { password: passwordData.value.password })
+        .then((res) => {
+          // notify('success', t('i18n.general.saveSuccess'), '')
+          ElMessage.success(t('i18n.general.saveSuccess'))
+          logout()
+        }).catch((err) => {
+        })
     } else {
       return false
     }
@@ -162,9 +259,15 @@ const rules = {
   ],
   birthday: [
     { validator: validateBirthday, trigger: ['blur', 'change'] }
-  ],
+  ]
+}
+
+const passwordRules = {
   password: [
-    { validator: validatePassword, trigger: ['blur', 'change'] }
+    { validator: validatePassword, trigger: ['change'] }
+  ],
+  checkPassword: [
+    { validator: validatePassword, trigger: ['change'] }
   ]
 }
 
@@ -229,15 +332,35 @@ function validatePassword(_rule: unknown, value: string, callback: (error?: stri
   if (value === '') {
     callback('不可為空')
   }
-  else if (value.length > 8) {
+  else if (value.length < 8) {
     callback('密碼為8個字元')
   }
-  else if (passwordRegex.test(value)) {
-    callback()
-  } else {
+  else if (passwordRegex.test(value) === false) {
     callback('至少包含一個大寫英文字母、一個數字以及一個特殊符號')
   }
+  else if (passwordData.value.password !== passwordData.value.checkPassword) {
+    callback('密碼與確認密碼需一致')
+  }
+  else {
+    callback()
+  }
 }
+
+function getUser () {
+  getUserApi(userID.value)
+    .then((res) => {
+      const user = res.data
+      formData.value.userName = user?.username
+      formData.value.phone = user?.phone_number
+      formData.value.email = user?.email
+      formData.value.birthday = new Date(user?.birth_date).toISOString().split('T')[0]
+    }).catch((err) => {
+    })
+}
+
+onMounted(() => {
+  getUser()
+})
 </script>
 
 <style scoped>
@@ -264,6 +387,7 @@ function validatePassword(_rule: unknown, value: string, callback: (error?: stri
 }
 .userContainer {
   display: flex;
+  flex-direction: column;
   margin: auto;
   width: 500px;
   padding: 1.5rem 2rem 1rem;
@@ -323,6 +447,7 @@ function validatePassword(_rule: unknown, value: string, callback: (error?: stri
 @media screen and (max-width: 760px) {
   .userContainer {
   display: flex;
+  flex-direction: column;
   margin: auto;
   width: 100%;
   padding: 1.5rem 2rem 1rem;

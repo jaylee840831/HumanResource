@@ -14,11 +14,13 @@ export interface loginForm{
 }
 
 export interface registerForm{
-  userName: '',
-  phone: '',
-  email: '',
-  birthday: '',
-  password: ''
+  username: string,
+  phone_number: string,
+  email: string,
+  birth_date: string,
+  password: string,
+  is_active: boolean,
+  is_superuser: boolean
 }
 
 export interface missionForm {
@@ -46,15 +48,10 @@ export interface userForm {
   selectedSkills: string[];
   selectedLanguages: selectedLanguage[];
 }
-
-export interface accountForm {
-  userName: string;
-  phone: string;
-  email: string;
-  password: string,
-  checkPassword: string,
-  birthday: string;
-  experience: string;
-  selectedSkills: string[];
-  selectedLanguages: selectedLanguage[];
+export interface userFormUpdate {
+  username: string,
+  phone_number: string,
+  email: string,
+  is_active: boolean,
+  birth_date: string
 }

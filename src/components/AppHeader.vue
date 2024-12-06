@@ -155,11 +155,12 @@
 import { getRouter } from '@/router/index'
 import { menuItem, routerItem } from '@/struct/router';
 
+let checkLocalStorageInterval: number | NodeJS.Timeout
 const route = useRoute()
 const router = useRouter()
 const routerActiveIndex = ref('0-0')
 const drawer = ref(false)
-const userName = ref(window.localStorage.getItem('user_name'))
+const userName = ref(window.localStorage.getItem('user_name') || '')
 const menuList = ref<menuItem[]>([])
 
 const userInfoList = ref([
@@ -170,11 +171,15 @@ const userInfoList = ref([
   }
 ])
 
+function logout () {
+  localStorage.clear()
+  router.push('/')
+}
+
 function handleUserCommand (cmd: string) {
   switch (cmd) {
   case '':
-    localStorage.clear()
-    router.push('/')
+    logout()
     break
   default:
     break
@@ -270,6 +275,17 @@ function setCurrentMenu () {
 
 onMounted(() => {
   setCurrentMenu()
+
+  checkLocalStorageInterval = setInterval(() => {
+    const newValue = localStorage.getItem('user_name') || ''
+    if (newValue !== userName.value) {
+      userName.value = newValue
+    }
+  }, 1000)
+})
+
+onBeforeUnmount(() => {
+  clearInterval(checkLocalStorageInterval)
 })
 </script>
 
