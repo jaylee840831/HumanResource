@@ -193,7 +193,7 @@ function validatePassword(_rule: unknown, value: string, callback: (error?: stri
   if (value === '') {
     callback('不可為空')
   }
-  else if (value.length > 8) {
+  else if (value.length !== 8) {
     callback('密碼為8個字元')
   }
   else if (passwordRegex.test(value)) {

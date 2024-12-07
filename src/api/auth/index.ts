@@ -7,7 +7,4 @@ export async function loginApi (form: loginForm) {
 }
 
 export async function logoutApi () {
-  // 清除cookie
-  const logout = await api.post(`/api/logout/`, {})
-  return logout
 }

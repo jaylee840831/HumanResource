@@ -135,8 +135,14 @@
 </template>
 
 <script setup lang="ts">
-import { selectedLanguage, userForm } from '@/struct/form';
+import { selectedLanguage, userForm, userFormUpdate } from '@/struct/form'
+import { getUserApi, updateUserApi, getUserProfileApi, updateUserProfileApi } from '@/api/user/index'
+import { getLanguagesApi, getSkillsApi } from '@/api/common/index'
+import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
+const userID = ref(window.localStorage.getItem('user_id') || '')
 const formDom = ref()
 const formData = ref<userForm>({
   userName: '',
@@ -148,16 +154,8 @@ const formData = ref<userForm>({
   selectedLanguages: []
 })
 
-// 群組選項(全部)
-const skillGroup = ref([
-  {
-    label: '影片剪輯',
-    value: 'video_clip'
-  },
-  {
-    label: '企劃行銷',
-    value: 'marketing_communication'
-  }
+// 技能選項(全部)
+const skillGroup = ref<any>([
 ])
 
 const currentselectLanguage = ref<selectedLanguage>({
@@ -165,19 +163,8 @@ const currentselectLanguage = ref<selectedLanguage>({
   level: ''
 })
 
-const languageGroup = ref([
-  {
-    label: '英語',
-    value: 'en'
-  },
-  {
-    label: '中文',
-    value: 'tw'
-  },
-  {
-    label: '日文',
-    value: 'jp'
-  }
+// 語言選項(全部)
+const languageGroup = ref<any>([
 ])
 
 const levelGroup = ref([
@@ -196,9 +183,38 @@ const levelGroup = ref([
 ])
 
 function saveUser () {
+  console.log(formData.value.selectedSkills)
+  console.log(formData.value.selectedLanguages)
+
   formDom.value.validate((valid: boolean) => {
     if (valid) {
-      alert('成功')
+      // 基本資料
+      const newForm = <userFormUpdate>{
+        username: formData.value.userName,
+        phone_number: formData.value.phone,
+        email: formData.value.email,
+        is_active: true,
+        birth_date: formData.value.birthday
+      }
+      updateUserApi(userID.value, newForm)
+      .then((res) => {
+        window.localStorage.setItem('user_name', res?.data?.username)
+        ElMessage.success(t('i18n.general.saveSuccess'))
+        // notify('success', t('i18n.general.saveSuccess'), '')
+      }).catch((err) => {
+      })
+
+      // 經歷、技能、語言
+      const newProfile = {
+        experience: formData.value.experience,
+        skills: formData.value.selectedSkills,
+        languages: formData.value.selectedLanguages
+      }
+      updateUserProfileApi(userID.value, newProfile)
+      .then((res) => {
+        ElMessage.success(t('i18n.general.saveSuccess'))
+      }).catch((err) => {
+      })
     } else {
       return false
     }
@@ -227,7 +243,7 @@ const rules = {
 }
 
 function showLanguage (target: selectedLanguage) {
-  const lanResult = languageGroup.value.find(item => target.lan === item.value)
+  const lanResult = languageGroup.value.find((item: { value: string }) => target.lan === item.value)
   const levelResult = levelGroup.value.find(item => target.level === item.value)
   return `${lanResult?.label} ${levelResult?.label}`
 }
@@ -309,7 +325,7 @@ function validatePassword(_rule: unknown, value: string, callback: (error?: stri
   if (value === '') {
     callback('不可為空')
   }
-  else if (value.length > 8) {
+  else if (value.length !== 8) {
     callback('密碼為8個字元')
   }
   else if (passwordRegex.test(value)) {
@@ -318,6 +334,86 @@ function validatePassword(_rule: unknown, value: string, callback: (error?: stri
     callback('至少包含一個大寫英文字母、一個數字以及一個特殊符號')
   }
 }
+
+function getUser () {
+  getUserApi(userID.value)
+    .then((res) => {
+      const user = res.data
+      formData.value.userName = user?.username
+      formData.value.phone = user?.phone_number
+      formData.value.email = user?.email
+      formData.value.birthday = new Date(user?.birth_date).toISOString().split('T')[0]
+    }).catch((err) => {
+    })
+}
+
+function getProfile () {
+  getUserProfileApi(userID.value)
+  .then((res) => {
+      const profile = res.data
+      const skills = profile?.skills
+      const languages = profile?.languages
+
+      formData.value.experience = profile?.experience
+
+      if (skills.length > 0) {
+        formData.value.selectedSkills = []
+        skills.forEach((element: string) => {
+          formData.value.selectedSkills.push(element)
+        })
+      }
+
+      if (languages.length > 0) {
+        formData.value.selectedLanguages = []
+        for (let i = 0; i < languages.length; i++) {
+          formData.value.selectedLanguages.push({
+            lan: languages[i].lan,
+            level: languages[i].level.toString()
+          })
+        }
+      }
+    }).catch((err) => {
+    })
+}
+
+function getAllLanguages () {
+  getLanguagesApi()
+  .then((res) => {
+      const languages = res.data
+      if (languages.length > 0) {
+        for (let i = 0; i < languages.length; i++) {
+          languageGroup.value.push({
+            label: languages[i]?.language_tw,
+            value: languages[i]?.language
+          })
+        }
+      }
+    }).catch((err) => {
+    })
+}
+
+function getAllSkills () {
+  getSkillsApi()
+  .then((res) => {
+      const skills = res.data
+      if (skills.length > 0) {
+        for (let i = 0; i < skills.length; i++) {
+          skillGroup.value.push({
+            label: skills[i]?.skill_tw,
+            value: skills[i]?.skill
+          })
+        }
+      }
+    }).catch((err) => {
+    })
+}
+
+onMounted(() => {
+  getUser()
+  getProfile()
+  getAllLanguages()
+  getAllSkills()
+})
 </script>
 
 <style scoped>

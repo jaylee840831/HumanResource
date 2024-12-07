@@ -24,9 +24,17 @@
         </div>
         <div class="flex justify-between items-center mt-2">
           瀏覽器
-          <el-button type="primary" @click="openBrowserNotify()">
-            開啟通知
-          </el-button>
+          <el-switch
+            v-model="isWebNotifyOn"
+            inline-prompt
+          >
+            <template #active-action>
+              <i class="bi bi-fill" style="color:#313339"></i>
+            </template>
+            <template #inactive-action>
+              <i class="bi bi-fill" style="color:#313339"></i>
+            </template>
+          </el-switch>
         </div>
       </el-form>
     </div>
@@ -34,14 +42,41 @@
 </template>
 
 <script setup lang="ts">
+import { getNotifyApi, updateNotifyApi } from '@/api/notify/index'
+
+const userID = ref(window.localStorage.getItem('user_id') || '')
 const isEmailNotifyOn = ref(false)
+const isWebNotifyOn = ref(false)
 
 watch(() => isEmailNotifyOn.value, (newValue) => {
-  console.log(newValue)
+  updateNotifyApi(userID.value, { email: newValue })
+  .then((res) => {
+    console.log(res)
+  }).catch((err) => {
+  })
 }, { deep: true })
 
-function openBrowserNotify () {
+watch(() => isWebNotifyOn.value, (newValue) => {
+  updateNotifyApi(userID.value, { web: newValue })
+  .then((res) => {
+    console.log(res)
+  }).catch((err) => {
+  })
+}, { deep: true })
+
+function getNotify () {
+  getNotifyApi(userID.value)
+  .then((res) => {
+    const notify = res.data
+    isEmailNotifyOn.value = notify?.email
+    isWebNotifyOn.value = notify?.web
+  }).catch((err) => {
+  })
 }
+
+onMounted(() => {
+  getNotify()
+})
 </script>
 
 <style scoped>
