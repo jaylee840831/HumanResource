@@ -137,7 +137,7 @@
 <script setup lang="ts">
 import { selectedLanguage, userForm, userFormUpdate } from '@/struct/form'
 import { getUserApi, updateUserApi, getUserProfileApi, updateUserProfileApi } from '@/api/user/index'
-import { getLanguagesApi, getSkillsApi } from '@/api/common/index'
+import { getValuesApi } from '@/api/common/index'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 
@@ -155,8 +155,7 @@ const formData = ref<userForm>({
 })
 
 // 技能選項(全部)
-const skillGroup = ref<any>([
-])
+const skillGroup = ref<any>([])
 
 const currentselectLanguage = ref<selectedLanguage>({
   lan: '',
@@ -164,8 +163,7 @@ const currentselectLanguage = ref<selectedLanguage>({
 })
 
 // 語言選項(全部)
-const languageGroup = ref<any>([
-])
+const languageGroup = ref<any>([])
 
 const levelGroup = ref([
   {
@@ -183,11 +181,10 @@ const levelGroup = ref([
 ])
 
 function saveUser () {
-  console.log(formData.value.selectedSkills)
-  console.log(formData.value.selectedLanguages)
-
-  formDom.value.validate((valid: boolean) => {
+  formDom.value.validate(async (valid: boolean) => {
     if (valid) {
+      let isSaveSuccess = []
+
       // 基本資料
       const newForm = <userFormUpdate>{
         username: formData.value.userName,
@@ -196,11 +193,10 @@ function saveUser () {
         is_active: true,
         birth_date: formData.value.birthday
       }
-      updateUserApi(userID.value, newForm)
+      await updateUserApi(userID.value, newForm)
       .then((res) => {
         window.localStorage.setItem('user_name', res?.data?.username)
-        ElMessage.success(t('i18n.general.saveSuccess'))
-        // notify('success', t('i18n.general.saveSuccess'), '')
+        isSaveSuccess.push(true)
       }).catch((err) => {
       })
 
@@ -210,11 +206,13 @@ function saveUser () {
         skills: formData.value.selectedSkills,
         languages: formData.value.selectedLanguages
       }
-      updateUserProfileApi(userID.value, newProfile)
+      await updateUserProfileApi(userID.value, newProfile)
       .then((res) => {
-        ElMessage.success(t('i18n.general.saveSuccess'))
+        isSaveSuccess.push(true)
       }).catch((err) => {
       })
+
+      if (isSaveSuccess.length === 2) ElMessage.success(t('i18n.general.saveSuccess'))
     } else {
       return false
     }
@@ -377,14 +375,14 @@ function getProfile () {
 }
 
 function getAllLanguages () {
-  getLanguagesApi()
+  getValuesApi('language')
   .then((res) => {
       const languages = res.data
       if (languages.length > 0) {
         for (let i = 0; i < languages.length; i++) {
           languageGroup.value.push({
-            label: languages[i]?.language_tw,
-            value: languages[i]?.language
+            label: languages[i]?.value_tw,
+            value: languages[i]?.value
           })
         }
       }
@@ -393,14 +391,14 @@ function getAllLanguages () {
 }
 
 function getAllSkills () {
-  getSkillsApi()
+  getValuesApi('skill')
   .then((res) => {
       const skills = res.data
       if (skills.length > 0) {
         for (let i = 0; i < skills.length; i++) {
           skillGroup.value.push({
-            label: skills[i]?.skill_tw,
-            value: skills[i]?.skill
+            label: skills[i]?.value_tw,
+            value: skills[i]?.value
           })
         }
       }

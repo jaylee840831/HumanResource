@@ -27,9 +27,9 @@ export interface missionForm {
   missionName: string,
   startday: string,
   endday: string,
-  type: string,
+  salaryType: string,
+  salary: string,
   currency: string,
-  money: string,
   location: string,
   userName: string;
   phone: string;
@@ -37,6 +37,20 @@ export interface missionForm {
   experience: string;
   selectedSkills: string[];
   selectedLanguages: selectedLanguage[];
+}
+
+export interface missionFormUpdate {
+  name: string,
+  start_date: string,
+  end_date: string,
+  salary_type: string,
+  salary: string,
+  currency: string,
+  location: string,
+  detail: string;
+  user: number;
+  skills: string[];
+  languages: selectedLanguage[];
 }
 
 export interface userForm {

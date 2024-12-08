@@ -27,7 +27,7 @@
           label="開始時間"
         >
           <el-input
-            type="date"
+            type="datetime-local"
             v-model="formData.startday"
             autocomplete="off"
           />
@@ -38,17 +38,17 @@
           label="結束時間"
         >
           <el-input
-            type="date"
+            type="datetime-local"
             v-model="formData.endday"
             autocomplete="off"
           />
         </el-form-item>
         <el-form-item
-          prop="type"
+          prop="salaryType"
           class="formInput"
         >
           <el-select
-            v-model="formData.type"
+            v-model="formData.salaryType"
             placeholder="薪酬類型"
             class="mr-2"
           >
@@ -77,12 +77,12 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          prop="money"
+          prop="salary"
           class="formInput"
         >
           <el-input
             placeholder="薪資"
-            v-model="formData.money"
+            v-model="formData.salary"
             autocomplete="off"
           />
         </el-form-item>
@@ -215,17 +215,24 @@
 </template>
 
 <script setup lang="ts">
-import { missionForm, selectedLanguage } from '@/struct/form';
+import { missionForm, missionFormUpdate, selectedLanguage } from '@/struct/form'
+import { createMissionApi } from '@/api/mission/index'
+import { getUserApi } from '@/api/user/index'
+import { getValuesApi } from '@/api/common/index'
+import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const isDisabled = ref(true)
+const userID = ref(window.localStorage.getItem('user_id') || '')
 const formDom = ref()
 const formData = ref<missionForm>({
   missionName: '',
   startday: '',
   endday: '',
-  type: '',
+  salaryType: '',
   currency: '',
-  money: '',
+  salary: '',
   location: '',
   userName: '',
   phone: '',
@@ -235,37 +242,16 @@ const formData = ref<missionForm>({
   selectedLanguages: []
 })
 
-// 群組選項(全部)
-const skillGroup = ref([
-  {
-    label: '影片剪輯',
-    value: 'video_clip'
-  },
-  {
-    label: '企劃行銷',
-    value: 'marketing_communication'
-  }
-])
+// 技能選項(全部)
+const skillGroup = ref<any>([])
 
 const currentselectLanguage = ref<selectedLanguage>({
   lan: '',
   level: ''
 })
 
-const languageGroup = ref([
-  {
-    label: '英語',
-    value: 'en'
-  },
-  {
-    label: '中文',
-    value: 'tw'
-  },
-  {
-    label: '日文',
-    value: 'jp'
-  }
-])
+// 語言選項(全部)
+const languageGroup = ref<any>([])
 
 const levelGroup = ref([
   {
@@ -282,36 +268,31 @@ const levelGroup = ref([
   }
 ])
 
-const timeGroup = ref([
-  {
-    label: '小時',
-    value: 'hr'
-  },
-  {
-    label: '日薪',
-    value: 'day'
-  },
-  {
-    label: '月薪',
-    value: 'month'
-  }
-])
+const timeGroup = ref<any>([])
 
-const currencyGroup = ref([
-  {
-    label: '台幣',
-    value: 'twd'
-  },
-  {
-    label: '美金',
-    value: 'usd'
-  }
-])
+const currencyGroup = ref<any>([])
 
 function saveData () {
   formDom.value.validate((valid: boolean) => {
     if (valid) {
-      alert('成功')
+      const newForm = <missionFormUpdate> {
+        name: formData.value.missionName,
+        start_date: formData.value.startday,
+        end_date: formData.value.endday,
+        salary_type: formData.value.salaryType,
+        salary: formData.value.salary,
+        currency: formData.value.currency,
+        location: formData.value.location,
+        detail: formData.value.experience,
+        user: Number(userID.value),
+        skills: formData.value.selectedSkills,
+        languages: formData.value.selectedLanguages
+      }
+      createMissionApi(newForm)
+      .then((res) => {
+        ElMessage.success(t('i18n.general.saveSuccess'))
+      }).catch((err) => {
+      })
     } else {
       return false
     }
@@ -328,13 +309,13 @@ const rules = {
   endday:[
     { validator: validateEmpty, trigger: ['blur', 'change'] }
   ],
-  type:[
+  salaryType:[
     { validator: validateEmpty, trigger: ['blur', 'change'] }
   ],
   currency:[
     { validator: validateEmpty, trigger: ['blur', 'change'] }
   ],
-  money: [
+  salary: [
     { validator: validateNumber, trigger: ['blur', 'change'] }
   ],
   location:[
@@ -346,25 +327,10 @@ const rules = {
   selectedSkills: [
     { validator: validateSelectedSkills, trigger: ['blur', 'change'] }
   ]
-  // userName: [
-  //   { validator: validateUserName, trigger: ['blur', 'change'] }
-  // ],
-  // phone: [
-  //   { validator: validatePhone, trigger: ['blur', 'change'] }
-  // ],
-  // email: [
-  //   { validator: validateEmail, trigger: ['blur', 'change'] }
-  // ],
-  // birthday: [
-  //   { validator: validateBirthday, trigger: ['blur', 'change'] }
-  // ],
-  // password: [
-  //   { validator: validatePassword, trigger: ['blur', 'change'] }
-  // ]
 }
 
 function showLanguage (target: selectedLanguage) {
-  const lanResult = languageGroup.value.find(item => target.lan === item.value)
+  const lanResult = languageGroup.value.find((item: { value: string }) => target.lan === item.value)
   const levelResult = levelGroup.value.find(item => target.level === item.value)
   return `${lanResult?.label} ${levelResult?.label}`
 }
@@ -407,71 +373,88 @@ function validateExperience (_rule: unknown, value: string, callback: (error?: s
   callback()
 }
 
-// function validateUserName (_rule: unknown, value: string, callback: (error?: string) => void) {
-//   if (value === '') {
-//     callback('不可為空')
-//   }
-//   else if (value.length > 0 && value.length <= 45) {
-//     callback()
-//   } else {
-//     callback('長度為1至45個字元')
-//   }
-// }
+function getUser () {
+  getUserApi(userID.value)
+    .then((res) => {
+      const user = res.data
+      formData.value.userName = user?.username
+      formData.value.phone = user?.phone_number
+      formData.value.email = user?.email
+    }).catch((err) => {
+    })
+}
 
-// function validatePhone (_rule: unknown, value: string, callback: (error?: string) => void) {
-//   let isPhone = false
-//   const regex = /^\d{10,15}$/
-//   isPhone = regex.test(value)
+function getAllLanguages () {
+  getValuesApi('language')
+  .then((res) => {
+      const languages = res.data
+      if (languages.length > 0) {
+        for (let i = 0; i < languages.length; i++) {
+          languageGroup.value.push({
+            label: languages[i]?.value_tw,
+            value: languages[i]?.value
+          })
+        }
+      }
+    }).catch((err) => {
+    })
+}
 
-//   if (value === '') {
-//     callback('不可為空')
-//   }
-//   else if (isPhone) {
-//     callback()
-//   } else {
-//     callback('格式錯誤')
-//   }
-// }
+function getAllSkills () {
+  getValuesApi('skill')
+  .then((res) => {
+      const skills = res.data
+      if (skills.length > 0) {
+        for (let i = 0; i < skills.length; i++) {
+          skillGroup.value.push({
+            label: skills[i]?.value_tw,
+            value: skills[i]?.value
+          })
+        }
+      }
+    }).catch((err) => {
+    })
+}
 
-// function validateEmail (_rule: unknown, value: string, callback: (error?: string) => void) {
-//   let isEmail = false
-//   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-//   isEmail = emailRegex.test(value)
+function getAllTimeType () {
+  getValuesApi('time')
+  .then((res) => {
+      const times = res.data
+      if (times.length > 0) {
+        for (let i = 0; i < times.length; i++) {
+          timeGroup.value.push({
+            label: times[i]?.value_tw,
+            value: times[i]?.value
+          })
+        }
+      }
+    }).catch((err) => {
+    })
+}
 
-//   if (value === '') {
-//     callback('不可為空')
-//   }
-//   else if (isEmail) {
-//     callback()
-//   } else {
-//     callback('格式錯誤')
-//   }
-// }
+function getAllCurrency () {
+  getValuesApi('currency')
+  .then((res) => {
+      const currency = res.data
+      if (currency.length > 0) {
+        for (let i = 0; i < currency.length; i++) {
+          currencyGroup.value.push({
+            label: currency[i]?.value_tw,
+            value: currency[i]?.value
+          })
+        }
+      }
+    }).catch((err) => {
+    })
+}
 
-// function validateBirthday (_rule: unknown, value: string, callback: (error?: string) => void) {
-//   if (value === '') {
-//     callback('不可為空')
-//   }
-//   else {
-//     callback()
-//   }
-// }
-
-// function validatePassword(_rule: unknown, value: string, callback: (error?: string) => void) {
-//   const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/
-
-//   if (value === '') {
-//     callback('不可為空')
-//   }
-//   else if (value.length > 8) {
-//     callback('密碼為8個字元')
-//   }
-//   else if (passwordRegex.test(value)) {
-//     callback()
-//   } else {
-//     callback('至少包含一個大寫英文字母、一個數字以及一個特殊符號')
-//   }
-// }
+onMounted(() => {
+  getUser()
+  getAllLanguages()
+  getAllSkills()
+  getAllTimeType()
+  getAllCurrency()
+})
 </script>
 
 <style scoped>

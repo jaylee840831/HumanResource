@@ -1,11 +1,6 @@
 import api from '@/plugins/axios'
 
-export async function getLanguagesApi() {
-  const languages = await api.get(`/api/get/languages/`)
-  return languages
-}
-
-export async function getSkillsApi() {
-  const skills = await api.get(`/api/get/skills/`)
-  return skills
+export async function getValuesApi(type: string) {
+  const values = await api.get(`/api/get/values/${type}`)
+  return values
 }
