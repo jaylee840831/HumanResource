@@ -12,7 +12,7 @@
           <i class="bi bi-search"></i>
         </template>
         </el-input>
-        <el-button @click="searchData()">搜尋</el-button>
+        <el-button type="success" @click="searchData()">搜尋</el-button>
       </div>
     </div>
     <!-- mission list -->
