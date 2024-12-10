@@ -64,7 +64,7 @@
         </el-form-item>
         <el-form-item class="formBtn">
           <el-button
-            type="primary"
+            type="success"
             class="w-1/2"
             @click="register">
             註冊

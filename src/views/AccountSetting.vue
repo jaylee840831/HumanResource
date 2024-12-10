@@ -54,7 +54,7 @@
         </el-form-item>
         <el-form-item class="formBtn">
           <el-button
-            type="primary"
+            type="success"
             class="w-1/2"
             @click="saveAccount">
             更新
@@ -95,7 +95,7 @@
         </el-form-item>
         <el-form-item class="formBtn">
           <el-button
-            type="primary"
+            type="success"
             class="w-1/2"
             @click="savePassword">
             更新
@@ -127,7 +127,7 @@
             取消
           </el-button>
           <el-button
-            type="primary"
+            type="success"
             @click="onConfirm">
             確定
           </el-button>

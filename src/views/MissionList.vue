@@ -1,35 +1,33 @@
 <template>
-  <div class="missionList">
+  <div class="missionList" v-loading="isLoading">
     <!-- search bar -->
-    <div class="flex justify-center mt-5">
-      <div class="autocompleteContainer">
-        <el-autocomplete
-          v-model="state2"
-          :fetch-suggestions="querySearch"
-          :trigger-on-focus="false"
-          clearable
-          class="mb-5"
-          placeholder="關鍵字(任務標題、技能、發布者姓名)"
-          @select="handleSelect"
+    <div class="flex justify-center mt-5 mb-5">
+      <div class="searchContainer">
+        <el-input
+          v-model="searchKeyWord"
+          class="mr-5"
+          placeholder="關鍵字(任務標題、地點)"
         >
         <template #prefix>
           <i class="bi bi-search"></i>
         </template>
-        </el-autocomplete>
+        </el-input>
+        <el-button @click="searchData()">搜尋</el-button>
       </div>
     </div>
     <!-- mission list -->
     <div class="listContainer" v-for="(m, index) in paginatedData" :key="index">
-      <div class="w-full">
+      <div class="w-full text-lg font-bold">
         {{ m.missionName }}
       </div>
-      <div class="flex justify-between mt-5">
-        <div>{{ m.userName }}</div>
-        <div>{{ m.startday }} - {{ m.endday }}</div>
-      </div>
-      <div class="flex justify-between mt-5">
+      <div class="flex justify-between mt-5 text-lg font-bold">
         <div>{{ m.location }}</div>
-        <div>${{ m.money }}</div>
+        <div>{{ m.startday }} ~ {{ m.endday }}</div>
+      </div>
+      <div class="flex mt-5 text-lg font-bold">
+        ${{ m.salaryType }}
+        {{ m.salary }}
+        {{ m.currency }}
       </div>
       <div class="w-full mt-5">
         {{ wordLimit(m.experience) }}
@@ -43,7 +41,7 @@
         </el-card>
       </div>
     </div>
-    <el-pagination
+    <!-- <el-pagination
       class="pagination"
       background
       layout="prev, pager, next"
@@ -52,64 +50,120 @@
       :total="missionData.length"
       :current-page="currentPage"
       @current-change="handleCurrentChange"
-    />
+    /> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { missionForm, searchItem } from '@/struct/form';
+import { missionForm, searchItem } from '@/struct/form'
+import { getAllMissionApi } from '@/api/mission/index'
 
+let debounceTimeout: any
 const currentPage = ref(1)
 const pageSize = ref(5)
+const searchKeyWord = ref('')
+const pageCount = ref(1)
+const totalNumber = ref(0)
+const isLoading = ref(false)
 const missionData = ref<missionForm[]>([])
 
 // 切換頁數獲得的當前資料
 const paginatedData = computed(() => {
   if (missionData.value.length > 0) {
-    const start = (currentPage.value - 1) * pageSize.value
-    const end = start + pageSize.value
-    return missionData.value.slice(start, end)
+    // const start = (currentPage.value - 1) * pageSize.value
+    // const end = start + pageSize.value
+    // return missionData.value.slice(start, end)
+    return missionData.value
   }
   return []
 })
 
 // 頁碼變化
-const handleCurrentChange = (page: number) => {
-  currentPage.value = page
-}
+// const handleCurrentChange = (page: number) => {
+//   // pageCount.value = pageCount.value + 1
+//   getAllMissionApi({ page: pageCount.value })
+//   .then((res) => {
+//     const missions = res.data
+//     if (missions.length > 0) {
+//       for (let i = 0; i < missions.length; i++) {
+//         const m = missions[i]
 
-const state2 = ref('')
+//         m.languages.forEach((element: { lan: string, level: string }) => {
+//           switch (element.level) {
+//             case '1':
+//               element.level = '初級'
+//               break
+//             case '2':
+//               element.level = '中等'
+//               break
+//             case '3':
+//               element.level = '精通'
+//               break
+//             default:
+//               break
+//           }
+//         })
 
-const searchs = ref<searchItem[]>([])
-const querySearch = (queryString: string, cb: any) => {
-  const results = queryString
-    ? searchs.value.filter(createFilter(queryString))
-    : searchs.value
-  // call callback function to return suggestions
-  cb(results)
-}
+//         missionData.value.push({
+//           missionName: m.name,
+//           startday: formatUTCTime(new Date(m.start_date)),
+//           endday: formatUTCTime(new Date(m.end_date)),
+//           salaryType: m.salary_type,
+//           salary: m.salary,
+//           currency: m.currency,
+//           location: m.location,
+//           userName: '',
+//           phone: '',
+//           email: '',
+//           experience: m.detail,
+//           selectedSkills: m.skills,
+//           selectedLanguages: m.languages
+//         })
+//       }
+//     }
+//   }).catch((err) => {
+//   })
+//   currentPage.value = page
+// }
 
-const createFilter = (queryString: string) => {
-  return (search: searchItem) => {
-    return (
-      search.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-    )
-  }
-}
-const loadAll = () => {
-  return [
-    { value: '聰泰科技', link: 'https://github.com/vuejs/vue' },
-    { value: '聯發科', link: 'https://github.com/ElemeFE/element' },
-    { value: 'java', link: 'https://github.com/ElemeFE/cooking' },
-    { value: 'python', link: 'https://github.com/ElemeFE/mint-ui' },
-    { value: '台積電', link: 'https://github.com/vuejs/vuex' },
-    { value: '中信', link: 'https://github.com/vuejs/vue-router' },
-    { value: '中華郵政', link: 'https://github.com/babel/babel' }
-  ]
-}
+// const state2 = ref('')
 
-const handleSelect = (item: searchItem) => {
-  console.log(item)
+// const searchs = ref<searchItem[]>([])
+// const querySearch = (queryString: string, cb: any) => {
+//   const results = queryString
+//     ? searchs.value.filter(createFilter(queryString))
+//     : searchs.value
+//   // call callback function to return suggestions
+//   cb(results)
+// }
+
+// const createFilter = (queryString: string) => {
+//   return (search: searchItem) => {
+//     return (
+//       search.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+//     )
+//   }
+// }
+// const loadAll = () => {
+//   return [
+//     { value: '聰泰科技', link: 'https://github.com/vuejs/vue' },
+//     { value: '聯發科', link: 'https://github.com/ElemeFE/element' },
+//     { value: 'java', link: 'https://github.com/ElemeFE/cooking' },
+//     { value: 'python', link: 'https://github.com/ElemeFE/mint-ui' },
+//     { value: '台積電', link: 'https://github.com/vuejs/vuex' },
+//     { value: '中信', link: 'https://github.com/vuejs/vue-router' },
+//     { value: '中華郵政', link: 'https://github.com/babel/babel' }
+//   ]
+// }
+
+// const handleSelect = (item: searchItem) => {
+//   console.log(item)
+// }
+
+async function searchData () {
+  pageCount.value = 1
+  missionData.value = []
+  getMissions()
 }
 
 function wordLimit (word: string) {
@@ -117,81 +171,96 @@ function wordLimit (word: string) {
   return word
 }
 
-onMounted(() => {
-  searchs.value = loadAll()
+function formatUTCTime(date: Date) {
+  const year = date.getUTCFullYear()
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0') // 月份從0開始，需加1
+  const day = String(date.getUTCDate()).padStart(2, '0')
+  const hours = String(date.getUTCHours()).padStart(2, '0')
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0')
+  const seconds = String(date.getUTCSeconds()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
 
-  for (let i = 0; i < 10; i++) {
-    missionData.value.push({
-      missionName: '測試'+ i,
-      startday: '2024/10/10',
-      endday: '2024/10/15',
-      type: '',
-      currency: '',
-      money: '15000',
-      location: '基隆市安樂區基金一路135巷21弄71號4樓',
-      userName: 'jasper',
-      phone: '0912345678',
-      email: '132@gmail.com',
-      experience: `[求學生涯]
+// 取得任務資料
+async function getMissions () {
+  getAllMissionApi({
+    page: pageCount.value || 1,
+    search_keyword: searchKeyWord.value || ''
+  })
+  .then((res) => {
+    const missions = res.data.missions
+    totalNumber.value = res.data.total
 
+    if (missions.length > 0) {
+      for (let i = 0; i < missions.length; i++) {
+        const m = missions[i]
 
+        m.languages.forEach((element: { lan: string, level: string }) => {
+          switch (element.level) {
+            case '1':
+              element.level = '初級'
+              break
+            case '2':
+              element.level = '中等'
+              break
+            case '3':
+              element.level = '精通'
+              break
+            default:
+              break
+          }
+        })
 
-大學期間學習資料庫設計、演算法、資料結構、手機App程式開發等課程，其中對於App開發特別感興趣，畢業專題也使用Java開發五將棋遊戲Android App。
+        missionData.value.push({
+          missionName: m.name,
+          startday: formatUTCTime(new Date(m.start_date)),
+          endday: formatUTCTime(new Date(m.end_date)),
+          salaryType: m.salary_type,
+          salary: m.salary,
+          currency: m.currency,
+          location: m.location,
+          userName: '',
+          phone: '',
+          email: '',
+          experience: m.detail,
+          selectedSkills: m.skills,
+          selectedLanguages: m.languages
+        })
+      }
+    }
+    pageCount.value = pageCount.value + 1
+  }).catch((err) => {
+  })
+}
 
-大三開始參加ITSA大專程式競賽，透過解題培養寫程式的思路邏輯，並且逐漸熟練基礎語法。
+async function handleScroll() {
+  clearTimeout(debounceTimeout)
+  // 設置新的延遲，防止事件觸發過於頻繁
+  debounceTimeout = setTimeout(function() {    
+    const scrollableDiv = document.getElementsByClassName('routerViewContainer')[0]
+    // 當滑動到底部，搜尋下一頁資料
+    if (Math.trunc(scrollableDiv.scrollHeight - scrollableDiv.scrollTop) === scrollableDiv.clientHeight) {
+      if (missionData.value.length < totalNumber.value) {
+        isLoading.value = true
+        getMissions()
+        setTimeout(() => {
+          isLoading.value = false
+        }, 1000)
+      }
+    }
+  }, 500)
+}
 
+onMounted(async () => {
+  watchEffect(() => {
+    const r = document.getElementsByClassName('routerViewContainer')[0]
+    r.addEventListener('scroll', handleScroll)
+    return () => {
+      r.removeEventListener('scroll', handleScroll)
+    }
+  })
 
-
-碩一在老師的推薦下參加中華電信IOT大平台應用競賽，並以路平偵測App入圍全國決賽，此App使用手機內建的三軸加速度感測器紀錄路面的顛簸程度，即時上傳至中華電信IOT雲端儲存平台，提供用戶查詢附近路況，減少因路面不平而受傷的風險。
-
-
-
-碩二時除了開始寫論文，也在歐格電子兼職擔任Android App工程師，工作內容包含UI介面、藍芽連接接收數據資料，讓我提前體驗真正職場上的開發流程，以及如何與人協同作業。
-
-
-
-畢業論文使用了Python開發籃球戰術辨識系統，該系統先以影像處理技術偵測球場的中場線自動剪輯出左右半場的比賽片段，再以影像辨識模型Yolov3框出球員位置並描繪出軌跡，最後戰術軌跡圖透過卷積神經網路訓練，得到戰術分類的結果。
-
-
-
-畢業前夕開始規劃未來的職涯發展方向，覺得網站開發職缺較豐富，除了前後端開發也有雲端、運維等等，最後決定以Java後端開發做為發展方向。
-
-
-
-[工作經歷]
-
-
-
-畢業後第一份工作在思納捷科技擔任Java後端工程師，
-負責API開發，偶爾支援前端畫面，還有一些網站的bug修正。在入職前，我並未碰過現今主流Java網站開發框架Spring Boot，因此是邊工作邊學，並且利用下班空閒時間精進自己，可以獨立完成主管交付的開發項目，有不懂的地方會積極的請教前輩或是找資源學習。
-
-
-
-在悅慶資訊經歷了兩個專案，第一個主要負責醫療相關報表的API，因為查詢資料的欄位較多，讓我對SQL子查詢有了更進一步的磨練機會。另一個專案負責檔案查詢API、驗證檔案資料以及定時排程處理資料...等等。在職期間用過Angular調整前端畫面，開始對響應式網頁產生興趣並且利用下班時間自學。
-
-
-
-目前在聰泰科技擔任網頁工程師，以Vue開發響應式網頁畫面，會與設計師討論畫面排版以及如何優化使用者體驗。`,
-      selectedSkills: [
-        '影片剪輯',
-        '企劃行銷'
-      ],
-      selectedLanguages: [
-        {
-          lan: '日文',
-          level: '中等'
-        },
-        {
-          lan: '中文',
-          level: '精通'
-        },
-        {
-          lan: '英文',
-          level: '精通'
-        }
-      ]
-    })
-  }
+  getMissions()
 })
 </script>
 
@@ -209,6 +278,8 @@ onMounted(() => {
   filter: drop-shadow(0 0 2em #42b883aa);
 }
 .listContainer {
+  cursor: pointer;
+  transition: transform 0.3s ease;
   display: flex;
   flex-direction: column;
   margin: 1rem auto 1rem auto;
@@ -271,8 +342,14 @@ onMounted(() => {
   }
 }
 
-:deep(.autocompleteContainer){
+.listContainer:hover{
+  transform: scale(1.03);
+}
+
+:deep(.searchContainer){
   width: 50%;
+  display: flex;
+  align-items: center; 
   :deep(.el-input__inner) {
     height: 40px;
   }
@@ -338,8 +415,14 @@ onMounted(() => {
   }
   }
 
-  :deep(.autocompleteContainer){
+  .listContainer:hover{
+    transform: none;
+  }
+
+  :deep(.searchContainer){
     width: 90%;
+    display: flex;
+    align-items: center; 
     :deep(.el-input__inner) {
       height: 40px;
     }

@@ -3,7 +3,7 @@
     <div class="flex items-center justify-center loginBox">
       <img src="/public/images/login2.jpg" alt="" class="h-full loginLogo" loading="lazy" />
       <el-form
-        :hide-required-asterisk="true"
+        autocomplete="off"
         ref="loginFormRef"
         :model="formData"
         :rules="loginRules"
@@ -28,6 +28,7 @@
         >
           <el-input
             v-model="formData.password"
+            type="password"
             autocomplete="off"
             placeholder="密碼"
           />
@@ -42,7 +43,7 @@
         </el-form-item> -->
         <el-form-item class="formBtn">
           <el-button
-            type="primary"
+            type="success"
             class="w-full"
             @click="login">
             登入
@@ -50,7 +51,7 @@
         </el-form-item>
         <el-form-item class="formBtn">
           <el-button
-            type="success"
+            type="primary"
             class="w-1/2"
             @click="register">
             建立新帳號

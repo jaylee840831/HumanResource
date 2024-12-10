@@ -203,7 +203,7 @@
         </el-form-item>
         <el-form-item class="formBtn">
           <el-button
-            type="primary"
+            type="success"
             class="w-1/2"
             @click="saveData">
             儲存
@@ -241,18 +241,14 @@ const formData = ref<missionForm>({
   selectedSkills: [],
   selectedLanguages: []
 })
-
 // 技能選項(全部)
 const skillGroup = ref<any>([])
-
 const currentselectLanguage = ref<selectedLanguage>({
   lan: '',
   level: ''
 })
-
 // 語言選項(全部)
 const languageGroup = ref<any>([])
-
 const levelGroup = ref([
   {
     label: '初級',
@@ -267,9 +263,7 @@ const levelGroup = ref([
     value: '3'
   }
 ])
-
 const timeGroup = ref<any>([])
-
 const currencyGroup = ref<any>([])
 
 function saveData () {

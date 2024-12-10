@@ -13,13 +13,8 @@
           <el-switch
             v-model="isEmailNotifyOn"
             inline-prompt
+            style="--el-switch-on-color: #13ab67; --el-switch-off-color: lightgray"
           >
-            <template #active-action>
-              <i class="bi bi-fill" style="color:#313339"></i>
-            </template>
-            <template #inactive-action>
-              <i class="bi bi-fill" style="color:#313339"></i>
-            </template>
           </el-switch>
         </div>
         <div class="flex justify-between items-center mt-2">
@@ -27,13 +22,8 @@
           <el-switch
             v-model="isWebNotifyOn"
             inline-prompt
+            style="--el-switch-on-color: #13ab67; --el-switch-off-color: lightgray"
           >
-            <template #active-action>
-              <i class="bi bi-fill" style="color:#313339"></i>
-            </template>
-            <template #inactive-action>
-              <i class="bi bi-fill" style="color:#313339"></i>
-            </template>
           </el-switch>
         </div>
       </el-form>
@@ -51,7 +41,7 @@ const isWebNotifyOn = ref(false)
 watch(() => isEmailNotifyOn.value, (newValue) => {
   updateNotifyApi(userID.value, { email: newValue })
   .then((res) => {
-    console.log(res)
+    // console.log(res)
   }).catch((err) => {
   })
 }, { deep: true })
@@ -59,7 +49,7 @@ watch(() => isEmailNotifyOn.value, (newValue) => {
 watch(() => isWebNotifyOn.value, (newValue) => {
   updateNotifyApi(userID.value, { web: newValue })
   .then((res) => {
-    console.log(res)
+    // console.log(res)
   }).catch((err) => {
   })
 }, { deep: true })

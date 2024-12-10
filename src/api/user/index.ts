@@ -31,7 +31,7 @@ export async function updateUserProfileApi(id: string, p: any) {
   return profile
 }
 
-export async function updatePasswordApi(id: string, p: string) {
+export async function updatePasswordApi(id: string, p: any) {
   const password = await api.put(`/api/update/user/${id}/password`, p)
   return password
 }

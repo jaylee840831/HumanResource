@@ -291,7 +291,7 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
   .is-active .el-sub-menu__title span{
-    color: #307bf4 !important;
+    color: #13ab67 !important;
   }
 
   .is-no-active span{

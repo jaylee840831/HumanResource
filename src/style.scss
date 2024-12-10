@@ -34,6 +34,7 @@ textarea{
 /* el-element */
 .el-dropdown__list ul li:hover{
   background-color: transparent !important;
+  color: #13ab67 !important;
 }
 
 .el-dropdown__list ul li{
@@ -64,14 +65,27 @@ textarea{
   }
 }
 
+.el-pagination.is-background .el-pager li:hover{
+  color: #13ab67 !important;
+}
+
+.el-pagination.is-background .el-pager li.is-active{
+  background-color: #13ab67 !important;
+}
+
 .el-menu .el-menu-item{
   background-color: transparent !important;
 }
 
 .el-menu .el-menu-item:hover {
   background-color: transparent !important;
+  color: #13ab67 !important;
 }
 
 .el-sub-menu__title:hover{
   background-color: transparent !important;
+}
+
+.el-menu-item.is-active {
+  color: #13ab67 !important;
 }

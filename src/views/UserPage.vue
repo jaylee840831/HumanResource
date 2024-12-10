@@ -123,7 +123,7 @@
         </div>
         <el-form-item class="formBtn">
           <el-button
-            type="primary"
+            type="success"
             class="w-1/2"
             @click="saveUser">
             儲存
@@ -366,7 +366,7 @@ function getProfile () {
         for (let i = 0; i < languages.length; i++) {
           formData.value.selectedLanguages.push({
             lan: languages[i].lan,
-            level: languages[i].level.toString()
+            level: languages[i].level
           })
         }
       }
