@@ -6,3 +6,5 @@
 
 ## 系統架構
 <img src='system.png'>
+
+後端原始碼: [HumanResource_Backend](https://github.com/jaylee840831/HumanResource_Backend)
