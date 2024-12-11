@@ -207,7 +207,7 @@ function isTokenValid(token: string) {
   }
 }
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   // 路由需要token驗證, login和register除外
   if (to.meta.requiresAuth) {
     const accessToken = window.localStorage.getItem('access_token')

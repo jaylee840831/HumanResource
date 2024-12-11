@@ -82,7 +82,7 @@ const loginRules = {
   password: [{ required: true, trigger: 'blur', validator: validatePassword }]
 }
 
-function validateEmail (rule: any, value: string, callback: Function) {
+function validateEmail (_rule: any, value: string, callback: Function) {
   if (value.length < 1) {
     callback(new Error(t('i18n.login.plsInputEmail')))
   } else {
@@ -90,7 +90,7 @@ function validateEmail (rule: any, value: string, callback: Function) {
   }
 }
 
-function validatePassword (rule: any, value: string, callback: Function) {
+function validatePassword (_rule: any, value: string, callback: Function) {
   if (value.length < 1) {
     callback(new Error(t('i18n.login.plsInputPassword')))
   } else {
@@ -109,7 +109,7 @@ function login () {
           ElMessage.success(t('i18n.login.loginSuccess'))
           // notify('success', t('i18n.login.loginSuccess'), '')
           router.push({ name: 'MissionList' })
-        }).catch((err) => {
+        }).catch((_err) => {
         })
     }
   })

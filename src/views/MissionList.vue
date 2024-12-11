@@ -55,12 +55,12 @@
 </template>
 
 <script setup lang="ts">
-import { missionForm, searchItem } from '@/struct/form'
+import { missionForm } from '@/struct/form'
 import { getAllMissionApi } from '@/api/mission/index'
 
 let debounceTimeout: any
-const currentPage = ref(1)
-const pageSize = ref(5)
+// const currentPage = ref(1)
+// const pageSize = ref(5)
 const searchKeyWord = ref('')
 const pageCount = ref(1)
 const totalNumber = ref(0)
@@ -229,7 +229,7 @@ async function getMissions () {
       }
     }
     pageCount.value = pageCount.value + 1
-  }).catch((err) => {
+  }).catch((_err) => {
   })
 }
 

@@ -283,9 +283,9 @@ function saveData () {
         languages: formData.value.selectedLanguages
       }
       createMissionApi(newForm)
-      .then((res) => {
+      .then((_res) => {
         ElMessage.success(t('i18n.general.saveSuccess'))
-      }).catch((err) => {
+      }).catch((_err) => {
       })
     } else {
       return false
@@ -374,7 +374,7 @@ function getUser () {
       formData.value.userName = user?.username
       formData.value.phone = user?.phone_number
       formData.value.email = user?.email
-    }).catch((err) => {
+    }).catch((_err) => {
     })
 }
 
@@ -390,7 +390,7 @@ function getAllLanguages () {
           })
         }
       }
-    }).catch((err) => {
+    }).catch((_err) => {
     })
 }
 
@@ -406,7 +406,7 @@ function getAllSkills () {
           })
         }
       }
-    }).catch((err) => {
+    }).catch((_err) => {
     })
 }
 
@@ -422,7 +422,7 @@ function getAllTimeType () {
           })
         }
       }
-    }).catch((err) => {
+    }).catch((_err) => {
     })
 }
 
@@ -438,7 +438,7 @@ function getAllCurrency () {
           })
         }
       }
-    }).catch((err) => {
+    }).catch((_err) => {
     })
 }
 

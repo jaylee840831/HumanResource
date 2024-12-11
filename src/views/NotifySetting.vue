@@ -40,17 +40,17 @@ const isWebNotifyOn = ref(false)
 
 watch(() => isEmailNotifyOn.value, (newValue) => {
   updateNotifyApi(userID.value, { email: newValue })
-  .then((res) => {
+  .then((_res) => {
     // console.log(res)
-  }).catch((err) => {
+  }).catch((_err) => {
   })
 }, { deep: true })
 
 watch(() => isWebNotifyOn.value, (newValue) => {
   updateNotifyApi(userID.value, { web: newValue })
-  .then((res) => {
+  .then((_res) => {
     // console.log(res)
-  }).catch((err) => {
+  }).catch((_err) => {
   })
 }, { deep: true })
 
@@ -60,7 +60,7 @@ function getNotify () {
     const notify = res.data
     isEmailNotifyOn.value = notify?.email
     isWebNotifyOn.value = notify?.web
-  }).catch((err) => {
+  }).catch((_err) => {
   })
 }
 

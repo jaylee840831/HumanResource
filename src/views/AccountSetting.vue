@@ -179,10 +179,10 @@ const onConfirm = () => {
   switch (dialogType.value) {
     case 'delete':
       deleteUserApi(userID.value)
-        .then((res) => {
+        .then((_res) => {
           ElMessage.success(t('i18n.general.deleteSuccess'))
           logout()
-        }).catch((err) => {
+        }).catch((_err) => {
         })
       break
     default:
@@ -210,7 +210,7 @@ function saveAccount () {
           window.localStorage.setItem('user_name', res?.data?.username)
           ElMessage.success(t('i18n.general.saveSuccess'))
           // notify('success', t('i18n.general.saveSuccess'), '')
-        }).catch((err) => {
+        }).catch((_err) => {
         })
     } else {
       return false
@@ -232,11 +232,11 @@ function savePassword () {
   passwordDom.value.validate(async (valid: boolean) => {
     if (valid) {
       updatePasswordApi(userID.value, { password: passwordData.value.password })
-        .then((res) => {
+        .then((_res) => {
           // notify('success', t('i18n.general.saveSuccess'), '')
           ElMessage.success(t('i18n.general.saveSuccess'))
           logout()
-        }).catch((err) => {
+        }).catch((_err) => {
         })
     } else {
       return false
@@ -354,7 +354,7 @@ function getUser () {
       formData.value.phone = user?.phone_number
       formData.value.email = user?.email
       formData.value.birthday = new Date(user?.birth_date).toISOString().split('T')[0]
-    }).catch((err) => {
+    }).catch((_err) => {
     })
 }
 

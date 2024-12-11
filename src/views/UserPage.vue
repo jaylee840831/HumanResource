@@ -197,7 +197,7 @@ function saveUser () {
       .then((res) => {
         window.localStorage.setItem('user_name', res?.data?.username)
         isSaveSuccess.push(true)
-      }).catch((err) => {
+      }).catch((_err) => {
       })
 
       // 經歷、技能、語言
@@ -207,9 +207,9 @@ function saveUser () {
         languages: formData.value.selectedLanguages
       }
       await updateUserProfileApi(userID.value, newProfile)
-      .then((res) => {
+      .then((_res) => {
         isSaveSuccess.push(true)
-      }).catch((err) => {
+      }).catch((_err) => {
       })
 
       if (isSaveSuccess.length === 2) ElMessage.success(t('i18n.general.saveSuccess'))
@@ -341,7 +341,7 @@ function getUser () {
       formData.value.phone = user?.phone_number
       formData.value.email = user?.email
       formData.value.birthday = new Date(user?.birth_date).toISOString().split('T')[0]
-    }).catch((err) => {
+    }).catch((_err) => {
     })
 }
 
@@ -370,7 +370,7 @@ function getProfile () {
           })
         }
       }
-    }).catch((err) => {
+    }).catch((_err) => {
     })
 }
 
@@ -386,7 +386,7 @@ function getAllLanguages () {
           })
         }
       }
-    }).catch((err) => {
+    }).catch((_err) => {
     })
 }
 
@@ -402,7 +402,7 @@ function getAllSkills () {
           })
         }
       }
-    }).catch((err) => {
+    }).catch((_err) => {
     })
 }
 

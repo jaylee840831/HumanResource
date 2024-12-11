@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 // import { useI18n } from 'vue-i18n'

@@ -109,11 +109,11 @@ function register () {
         birth_date: formData.value.birthday
       }
       registerApi(newForm)
-        .then((res) => {
+        .then((_res) => {
           // notify('success', t('i18n.register.registerSuccess'), '')
           ElMessage.success(t('i18n.register.registerSuccess'))
           router.push({ name: 'Login' })
-        }).catch((err) => {
+        }).catch((_err) => {
         })
     }
   })
